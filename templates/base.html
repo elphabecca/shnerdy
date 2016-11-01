@@ -1,1 +1,31 @@
-base.html
+<!doctype html>
+<html>
+<head>
+    <title>{% block title %} Title goes here {% endblock %}</title>
+    <script src="https://code.jquery.com/jquery.js"></script>
+</head>
+
+<body>
+
+    <!-- FLASH MESSAGING -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- LOGOUT OPTION DISPLAYED: ? -->
+    {% if user_sess != None %}
+    <a href="/logout">Logout</a>
+    {% endif %}
+    <hr>
+
+    <!-- BODY CONTENT HERE -->
+    {% block content %} BODY CONTENT GOES HERE {% endblock %}
+    
+</body>
+</html>
