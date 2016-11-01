@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>SHNERDY</h1>
+
+<h3>Shop nerdy, shop efficient.</h3>
+
+<p>Given a single category, Shnerdy will return a comprehensive t-shirt listing just for you!</p>
+
+<form action="/display_results" id="test_button">Get items from Etsy API
+<input type="submit" id="login_submit" value="Testing">
+</form><br><br>
+
+{% if user_sess == None %}
+<form action="/login" id="login">Login:<br>
+    <label for="username">Username:<input type="text" name="username"></label><br>
+    <label for="password">Password:<input type="text" name="password"></label><br>
+    <input type="submit" name="login" value="Login!">
+</form>
+{% endif %}
+
+{% endblock %}

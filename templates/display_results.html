@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<ul> RESULTS:
+{% for item in result_list %}
+
+    <li>Title: {{ item["title"] }}</li>
+    <li>Price: {{ item["price"] }}</li>
+    <li><a href={{ item["url"] }}>Link</a></li>
+        {% for image in item["Images"] %}
+        <li><img src={{ image["url_170x135"] }}></li>
+        {% endfor %}<br>
+
+{% endfor %}
+</ul>
+
+{% endblock %}
