@@ -2,17 +2,18 @@
 
 {% block content %}
 
-<h3>RESULTS:</h3>
+<h3>RESULTS ({{ num_items }}):</h3>
 
 <ul>
 {% for item in result_list %}
 
     <li>Title: {{ item["title"] }}</li>
     <li>Price: {{ item["price"] }}</li>
-    <li><a href={{ item["url"] }}>Link</a></li>
-        {% for image in item["Images"] %}
-        <li><img src={{ image["url_170x135"] }}></li>
-        {% endfor %}<br>
+    <li><a href={{ item["url"] }}>Shirt Link</a></li>
+    <img src={{ item["Images"][0]["url_170x135"] }}><br><br>
+       <!--  {% for image in item["Images"] %}
+            <img src={{ image["url_170x135"] }}>
+        {% endfor %}<br><br> -->
 
 {% endfor %}
 </ul>
