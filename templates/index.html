@@ -6,17 +6,22 @@
 
 <h3>Shop nerdy, shop efficient.</h3>
 
-<p>Given a single category, Shnerdy will return a comprehensive t-shirt listing just for you!</p>
+<ul>
+    <li>Step 1: Create a category and add search terms.</li>
+    <li>Step 2: Search shirts!</li>
+    <li>Step 3: Try not to buy all the shirts...</li>
+</ul>
 
 <form action="/display_results" id="test_button">Get items from Etsy API
 <input type="submit" id="login_submit" value="Testing">
 </form><br><br>
 
-{% if user_sess == None %}
-<form action="/login" id="login">Login:<br>
+{% if access_token == None %}
+<form action="/login" id="login" method="POST">Login:<br>
     <label for="username">Username:<input type="text" name="username"></label><br>
-    <label for="password">Password:<input type="text" name="password"></label><br>
-    <input type="submit" name="login" value="Login!">
+    <label for="password">Password:<input type="password" name="password"></label><br>
+    <input type="submit" name="login" value="Login">
+    <input type="button" name="register" value="Register">
 </form>
 {% endif %}
 

@@ -1,13 +1,16 @@
-from flask import Flask, render_template, jsonify, request, session, redirect
+from flask import Flask, render_template, jsonify, request, session, redirect, flash
 import requests
 import os
-import model
+from model import User, Term, connect_to_db
 
 app = Flask(__name__)
 
 app.secret_key = "talknerdytome"
 SHARED_SECRET = os.environ["SHARED_SECRET"]
 KEYSTRING = os.environ["KEYSTRING"]
+# KEYSTRING = os.environ.get("KEYSTRING", "whatever")
+# if not KEYSTRING:
+#     raise ValueError("Hey, you didn't source...")
 
 # ROUTES & HELPER FXNS
 # *************************************************
@@ -16,15 +19,11 @@ KEYSTRING = os.environ["KEYSTRING"]
 def index():
     """Shnerdy introduction (need), login/OAuth form (need), logout button if user not in session (need)"""
 
-    # print "\n\n\n\n****************\nTHIS IS THE SESSION: ", session, "\n\n\n"
+    print "\n\n\n\n****************\nTHIS IS THE SESSION: ", session, "\n\n\n"
     access_token = session.get('access_token')
-    # print "\n\n\n ACCESS TOKEN: ", access_token, "\n\n\n"
+    print "\n\n\n ACCESS TOKEN: ", access_token, "\n\n\n"
 
-    # Logoout or login only shows if the user is logged in
-    if access_token is None:
-        user_sess = None
-
-    return render_template('index.html', user_sess=user_sess)
+    return render_template('index.html', access_token=access_token)
 
 def get_many_results():
     """Taking in a list of search terms, return all search results."""
@@ -78,15 +77,56 @@ def show_results():
 
     return render_template("display_results.html", result_list=result_list, num_items=num_items)
 
+@app.route('/login', methods=['POST'])
+def validate_user():
+    """Add user to the db if they are a new user, validate user if they are a returning user."""
+
+    username = request.form["username"]
+    password = request.form["password"]
+
+    user = User.query.filter(User.username == username).first()
+
+    if not user:
+        flash("Username doesn't exist -- please register!")
+        return redirect('/')
+
+    if user.password != password:
+        flash("Whoops -- try that password again.")
+        return redirect('/')
+
+    session['access_token'] = user.id
+    flash("Successful Login -- Welcome, %s!" % user.first_name)
+
+    return redirect('/')
+    # return redirect('/%s' % user.id)
+
+
+@app.route('/<int:user_id>')
+def show_user_terms(user_id):
+    """Show the user their categories and terms, allow them to add new terms and edit fields."""
+
+    print "Hey you're at %s's page!" % user.id
+
+    return render_template(user_page.html)
+
+
+@app.route('/logout')
+def logout_user():
+    """Log the Shnerdy User out."""
+
+    del session['access_token']
+    flash("You've successfully logged out of Shnerdy.")
+    return redirect('/')
+
 
 
 
 # *************************************************
 if __name__ == "__main__":
 
+    connect_to_db(app)
     app.run(debug=True, host="0.0.0.0", port=5003)
 
-    model.connect_to_db(app)
 
 
 

@@ -19,7 +19,7 @@
     {% endwith %}
 
     <!-- LOGOUT OPTION DISPLAYED: ? -->
-    {% if user_sess != None %}
+    {% if session['access_token'] %}
     <a href="/logout">Logout</a>
     {% endif %}
     <hr>
