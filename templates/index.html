@@ -16,13 +16,66 @@
 <input type="submit" id="login_submit" value="Testing">
 </form><br><br>
 
-{% if access_token == None %}
-<form action="/login" id="login" method="POST">Login:<br>
-    <label for="username">Username:<input type="text" name="username"></label><br>
-    <label for="password">Password:<input type="password" name="password"></label><br>
-    <input type="submit" name="login" value="Login">
-    <input type="button" name="register" value="Register">
+
+
+<form action="/oauth" method="POST">
+   <input type="submit" id="oauth" name="oauth" value="Login with Google"> 
 </form>
+
+{% if access_token == None %}
+
+<!-- IF USER IS NOT LOGGED IN, SHOW LOGIN FORM -->
+<!-- LOGIN FORM -->
+<!-- <form action="/login" id="login" method="POST">Login:<br>
+    Username:<input type="text" id="username" name="username"><br>
+    Password:<input type="password" id="password" name="password"><br>
+    <input type="submit" id="login_submit" name="login" value="Login">
+</form><br><br> -->
+
+    <!-- The button for new user registration form (was under $('login_submit')) -->
+    <!-- <input type="button" id="register_show" value="New to Shnerdy?"> -->
+
+    <!-- Show/Hide register form on click event -->
+    <!--<script type="text/javascript">
+        function toggle_register_form(evt) {
+            $('#register').toggle();
+            console.dir(evt);
+        }
+
+        $('#register_show').on('click',toggle_register_form);
+    </script>-->
+
+    <!-- NEW USER REGISTRATION FORM -->
+    <!--<form hidden action="/login" id="register" method="POST">New Users:<br>
+        First Name: <input type="text" id="new_first_name" name="new_first_name"><br>
+        Username: <input type="text" id="new_username" name="new_username"><br>
+        Password: <input type="password" id="new_password" name="new_password"><br>
+        <input type="submit" id=""register_submit" name="register_submit" value="Register">
+    </form>-->
+
+    <!-- FILLING IN FORM INFO TO ACCOUNT FOR THE BUTTON NOT PUSHED -->
+    <!--<script type="text/javascript">
+        
+    function fill_unused_fields_login_submit(evt) {
+        var new_first_name = $('#new_first_name').val("nerdy_shnerdy_admin");
+        var new_username = $('#new_username').val("nerdy_shnerdy_admin");
+        var new_password = $('#new_password').val("nerdy_shnerdy_admin");
+        $('#login').submit();
+        console.dir(evt);
+    }
+
+    function fill_unused_fields_register_submit(evt) {
+        var username = $('#username').val("nerdy_shnerdy_admin");
+        var password = $('#password').val("nerdy_shnerdy_admin");
+        $('#register').submit()
+        console.dir(evt);
+    }
+
+    $('#login_submit').on('click', fill_unused_fields_login_submit);
+    $('#register_submit').on('click', fill_unused_fields_register_submit);
+
+    </script>-->
+
 {% endif %}
 
 {% endblock %}

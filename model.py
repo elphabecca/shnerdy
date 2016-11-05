@@ -16,13 +16,14 @@ class User(db.Model):
                    autoincrement=True)
     first_name = db.Column(db.String(50),
                            nullable=False)
-    username = db.Column(db.String(50),
-                         nullable=False,
-                         unique=True)
-    password = db.Column(db.String(50),
-                         nullable=False)
-    oauth = db.Column(db.String(100),
+    email = db.Column(db.String(75),
+                      nullable=False,
                       unique=True)
+    username = db.Column(db.String(50),
+                         unique=True)
+    password = db.Column(db.String(50))
+    oauth_id = db.Column(db.String(100),
+                         unique=True)
 
     def __repr__(self):
         """Show info about the user."""
@@ -74,4 +75,5 @@ if __name__ == "__main__":
 
 # For when you forget later but you had to dump and re-do your db:
 # db.create_all()
+# brew install postgres (if command psql not found)
 

@@ -1,4 +1,5 @@
-from flask import Flask, render_template, jsonify, request, session, redirect, flash
+from flask import Flask, render_template, jsonify, request, session, redirect, flash, url_for
+from flask_oauth import OAuth
 import requests
 import os
 from model import User, Term, connect_to_db
@@ -11,6 +12,21 @@ KEYSTRING = os.environ["KEYSTRING"]
 # KEYSTRING = os.environ.get("KEYSTRING", "whatever")
 # if not KEYSTRING:
 #     raise ValueError("Hey, you didn't source...")
+REDIRECT_URI = "/oauth2callback"
+oauth = OAuth()
+
+# Google OAuth Params
+google = oauth.remote_app('google',
+                          base_url='https://www.google.com/accounts/',
+                          authorize_url='https://accounts.google.com/o/oauth2/auth',
+                          request_token_url=None,
+                          request_token_params={'scope': 'https://www.googleapis.com/auth/userinfo.email',
+                                                'response_type': 'code'},
+                          access_token_url='https://accounts.google.com/o/oauth2/token',
+                          access_token_method='POST',
+                          access_token_params={'grant_type': 'authorization_code'},
+                          consumer_key=os.environ["GOOGLE_CLIENT_ID"],
+                          consumer_secret=os.environ["GOOGLE_CLIENT_SECRET"])
 
 # ROUTES & HELPER FXNS
 # *************************************************
@@ -19,11 +35,76 @@ KEYSTRING = os.environ["KEYSTRING"]
 def index():
     """Shnerdy introduction (need), login/OAuth form (need), logout button if user not in session (need)"""
 
-    print "\n\n\n\n****************\nTHIS IS THE SESSION: ", session, "\n\n\n"
     access_token = session.get('access_token')
-    print "\n\n\n ACCESS TOKEN: ", access_token, "\n\n\n"
 
     return render_template('index.html', access_token=access_token)
+
+
+@app.route("/oauth", methods=['POST'])
+def oauth():
+    """Google OAuth"""
+
+    # If the access token does not exist, go to /login to get user auth.
+    access_token = session.get('access_token')
+    if access_token is None:
+        return redirect('/login')
+
+    # If the session already has an access_token exists, make sure it's valid.
+    access_token = access_token[0]
+    from urllib2 import Request, urlopen, URLError
+
+    headers = {'Authorization': 'OAuth '+access_token}
+    req = Request('https://www.googleapis.com/oauth2/v1/userinfo',
+                  None, headers)
+
+    # Try to get the user authorized given the current access_token.
+    # If it's a bad token, pop it out and go the route of asking the user for authorization.
+    try:
+        res = urlopen(req)
+    except URLError, e:
+        if e.code == 401:
+            # Unauthorized - bad token
+            session.pop('access_token', None)
+            return redirect(url_for('login'))
+    return res.read()
+
+def get_google_info():
+    """Get user's name and email from Google OAuth Login."""
+
+    access_token = session.get('access_token')
+    access_token = access_token[0]
+    google_user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + access_token
+
+    google_user_info = requests.get(google_user_info_url)
+    google_user_json = google_user_info.json()
+
+    return google_user_json
+
+
+@app.route('/login')
+def login():
+    callback=url_for('authorized', _external=True)
+    return google.authorize(callback=callback)
+
+
+@app.route(REDIRECT_URI)
+@google.authorized_handler
+def authorized(resp):
+    access_token = resp['access_token']
+    session['access_token'] = access_token, ''
+    return redirect('/oauth_success')
+
+@app.route("/oauth_success")
+def yay():
+    user_info = get_google_info()
+    print "USER ID: ", user_info["id"], "USER NAME: ", user_info["given_name"], "USER EMAIL: ", user_info["email"]
+    return render_template("success.html", user_info=user_info)
+
+
+@google.tokengetter
+def get_access_token():
+    return session.get('access_token')
+
 
 def get_many_results():
     """Taking in a list of search terms, return all search results."""
@@ -37,7 +118,7 @@ def get_many_results():
         full_response.extend(term_results_list)
 
     return full_response
-        
+
 
 def get_etsy_stuff(search_term):
     """Return search_term TShirts from the etsy API"""
@@ -83,6 +164,12 @@ def validate_user():
 
     username = request.form["username"]
     password = request.form["password"]
+    # first_name = request.form["new_first_name"]
+    # new_username = request.form["new_username"]
+    # new_password = request.form["new_password"]
+
+    # RETURNING USER FLOW
+    # if first_name and new_username and new_password == "nerdy_shnerdy_admin":
 
     user = User.query.filter(User.username == username).first()
 
@@ -97,17 +184,27 @@ def validate_user():
     session['access_token'] = user.id
     flash("Successful Login -- Welcome, %s!" % user.first_name)
 
-    return redirect('/')
-    # return redirect('/%s' % user.id)
+    return redirect('/%s' % user.id)
+
+    # NEW USER FLOW
+    # if username and password == "nerdy_shnerdy_admin":
+        
+    #     print first_name, new_username, new_password
+    #     flash("Whaddup, new user!")
+
+    #     return redirect('/')
 
 
 @app.route('/<int:user_id>')
 def show_user_terms(user_id):
     """Show the user their categories and terms, allow them to add new terms and edit fields."""
 
-    print "Hey you're at %s's page!" % user.id
+    user = User.query.get(user_id)
+    terms = Term.query.filter(Term.user_id == user_id).all()
 
-    return render_template(user_page.html)
+    print terms
+
+    return render_template('user_page.html')
 
 
 @app.route('/logout')
@@ -125,7 +222,10 @@ def logout_user():
 if __name__ == "__main__":
 
     connect_to_db(app)
-    app.run(debug=True, host="0.0.0.0", port=5003)
+    app.run(debug=True)
+
+
+    # for vagrant: (host="0.0.0.0", port=5003)
 
 
 
