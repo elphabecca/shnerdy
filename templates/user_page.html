@@ -2,6 +2,21 @@
 
 {% block content %}
 
-USER USER USER USER MUSHROOM MUSHROOM
+<h1>Search Shnerdy!</h1>
+
+{% if terms == [] %}
+<p>Whoops -- looks like you haven't created any searches yet. Add some below!</p>
+{% endif %}
+
+<form>
+    Category Name: <input type="text" id="category" name="category">
+    <input type="button" id="category_add" value="Add Category">
+</form>
+
+{{ terms }}
+
+<form action="/display_results" id="test_button">Get items from Etsy API
+<input type="submit" id="etsy_submit" value="Testing">
+</form><br><br>
 
 {% endblock %}

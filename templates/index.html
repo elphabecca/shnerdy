@@ -13,16 +13,21 @@
 </ul>
 
 <form action="/display_results" id="test_button">Get items from Etsy API
-<input type="submit" id="login_submit" value="Testing">
+<input type="submit" id="etsy_submit" value="Testing">
 </form><br><br>
 
 
+{% if access_token == None %}
 
 <form action="/oauth" method="POST">
    <input type="submit" id="oauth" name="oauth" value="Login with Google"> 
 </form>
 
-{% if access_token == None %}
+{% endif %}
+
+{% endblock %}
+
+<!-- ***** OLD CODE (from before I was doing Google OAuth) ***** -->
 
 <!-- IF USER IS NOT LOGGED IN, SHOW LOGIN FORM -->
 <!-- LOGIN FORM -->
@@ -76,6 +81,3 @@
 
     </script>-->
 
-{% endif %}
-
-{% endblock %}

@@ -1,11 +1,17 @@
 <!doctype html>
 <html>
 <head>
-    <title>{% block title %} Title goes here {% endblock %}</title>
+    <title>{% block title %} SHNERDY {% endblock %}</title>
     <script src="https://code.jquery.com/jquery.js"></script>
 </head>
 
 <body>
+
+    <!-- LOGOUT OPTION DISPLAYED: ? -->
+    {% if session['access_token'] %}
+    <a href="/logout">Logout</a>
+    {% endif %}
+    <hr>
 
     <!-- FLASH MESSAGING -->
     {% with messages = get_flashed_messages() %}
@@ -17,12 +23,6 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-    <!-- LOGOUT OPTION DISPLAYED: ? -->
-    {% if session['access_token'] %}
-    <a href="/logout">Logout</a>
-    {% endif %}
-    <hr>
 
     <!-- BODY CONTENT HERE -->
     {% block content %} BODY CONTENT GOES HERE {% endblock %}

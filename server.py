@@ -124,8 +124,6 @@ def yay():
     return redirect('/%s' % user.id)
 
 
-
-
 # ETSY API FUNCTIONS
 def get_many_results():
     """Taking in a list of search terms, return all search results."""
@@ -188,7 +186,7 @@ def show_user_terms(user_id):
 
     print terms
 
-    return render_template('user_page.html')
+    return render_template('user_page.html', user=user, terms=terms)
 
 
 @app.route('/logout')
