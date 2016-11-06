@@ -22,7 +22,7 @@ class User(db.Model):
     username = db.Column(db.String(50),
                          unique=True)
     password = db.Column(db.String(50))
-    oauth_id = db.Column(db.String(100),
+    oauth_id = db.Column(db.String(50),
                          unique=True)
 
     def __repr__(self):

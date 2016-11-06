@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, session, redirect, f
 from flask_oauth import OAuth
 import requests
 import os
-from model import User, Term, connect_to_db
+from model import User, Term, connect_to_db, db
 
 app = Flask(__name__)
 
@@ -31,6 +31,7 @@ google = oauth.remote_app('google',
 # ROUTES & HELPER FXNS
 # *************************************************
 
+# HOME PAGE
 @app.route('/')
 def index():
     """Shnerdy introduction (need), login/OAuth form (need), logout button if user not in session (need)"""
@@ -40,6 +41,7 @@ def index():
     return render_template('index.html', access_token=access_token)
 
 
+# OAUTH HANDLING - @app.route("/oauth"), @app.route(REDIRECT_URI), @app.route('/login'), @google.tokengetter
 @app.route("/oauth", methods=['POST'])
 def oauth():
     """Google OAuth"""
@@ -68,6 +70,24 @@ def oauth():
             return redirect(url_for('login'))
     return res.read()
 
+@app.route('/login')
+def login():
+    callback=url_for('authorized', _external=True)
+    return google.authorize(callback=callback)
+
+@app.route(REDIRECT_URI)
+@google.authorized_handler
+def authorized(resp):
+    access_token = resp['access_token']
+    session['access_token'] = access_token, ''
+    return redirect('/oauth_success')
+
+@google.tokengetter
+def get_access_token():
+    return session.get('access_token')
+
+
+# Helper function to get user's name and email from google once they've OAuthed in.
 def get_google_info():
     """Get user's name and email from Google OAuth Login."""
 
@@ -78,34 +98,35 @@ def get_google_info():
     google_user_info = requests.get(google_user_info_url)
     google_user_json = google_user_info.json()
 
-    return google_user_json
+    return google_user_info.json()
 
-
-@app.route('/login')
-def login():
-    callback=url_for('authorized', _external=True)
-    return google.authorize(callback=callback)
-
-
-@app.route(REDIRECT_URI)
-@google.authorized_handler
-def authorized(resp):
-    access_token = resp['access_token']
-    session['access_token'] = access_token, ''
-    return redirect('/oauth_success')
 
 @app.route("/oauth_success")
 def yay():
     user_info = get_google_info()
-    print "USER ID: ", user_info["id"], "USER NAME: ", user_info["given_name"], "USER EMAIL: ", user_info["email"]
-    return render_template("success.html", user_info=user_info)
+
+    google_user_id = str(user_info["id"])
+    google_first_name = str(user_info["given_name"])
+    google_email = str(user_info["email"])
+
+    user = User.query.filter(User.oauth_id == google_user_id).first()
+
+    if not user:
+        new_user = User(first_name=google_first_name, email=google_email, oauth_id=google_user_id)
+        db.session.add(new_user)
+        db.session.commit()
+        user = User.query.filter(User.oauth_id == google_user_id).first()
+        flash("Welcome to Shnerdy, %s!" % google_first_name)
+
+        return redirect('/%s' % user.id)
+
+    flash("Welcome back, %s!" % user.first_name)
+    return redirect('/%s' % user.id)
 
 
-@google.tokengetter
-def get_access_token():
-    return session.get('access_token')
 
 
+# ETSY API FUNCTIONS
 def get_many_results():
     """Taking in a list of search terms, return all search results."""
 
@@ -118,7 +139,6 @@ def get_many_results():
         full_response.extend(term_results_list)
 
     return full_response
-
 
 def get_etsy_stuff(search_term):
     """Return search_term TShirts from the etsy API"""
@@ -158,42 +178,6 @@ def show_results():
 
     return render_template("display_results.html", result_list=result_list, num_items=num_items)
 
-@app.route('/login', methods=['POST'])
-def validate_user():
-    """Add user to the db if they are a new user, validate user if they are a returning user."""
-
-    username = request.form["username"]
-    password = request.form["password"]
-    # first_name = request.form["new_first_name"]
-    # new_username = request.form["new_username"]
-    # new_password = request.form["new_password"]
-
-    # RETURNING USER FLOW
-    # if first_name and new_username and new_password == "nerdy_shnerdy_admin":
-
-    user = User.query.filter(User.username == username).first()
-
-    if not user:
-        flash("Username doesn't exist -- please register!")
-        return redirect('/')
-
-    if user.password != password:
-        flash("Whoops -- try that password again.")
-        return redirect('/')
-
-    session['access_token'] = user.id
-    flash("Successful Login -- Welcome, %s!" % user.first_name)
-
-    return redirect('/%s' % user.id)
-
-    # NEW USER FLOW
-    # if username and password == "nerdy_shnerdy_admin":
-        
-    #     print first_name, new_username, new_password
-    #     flash("Whaddup, new user!")
-
-    #     return redirect('/')
-
 
 @app.route('/<int:user_id>')
 def show_user_terms(user_id):
@@ -229,5 +213,40 @@ if __name__ == "__main__":
 
 
 
+# ********************* OLD CODE: *****************************************
+# @app.route('/login', methods=['POST'])
+# def validate_user():
+#     """Add user to the db if they are a new user, validate user if they are a returning user."""
 
+#     username = request.form["username"]
+#     password = request.form["password"]
+#     first_name = request.form["new_first_name"]
+#     new_username = request.form["new_username"]
+#     new_password = request.form["new_password"]
+
+#     # RETURNING USER FLOW
+#     if first_name and new_username and new_password == "nerdy_shnerdy_admin":
+
+#     user = User.query.filter(User.username == username).first()
+
+#     if not user:
+#         flash("Username doesn't exist -- please register!")
+#         return redirect('/')
+
+#     if user.password != password:
+#         flash("Whoops -- try that password again.")
+#         return redirect('/')
+
+#     session['access_token'] = user.id
+#     flash("Successful Login -- Welcome, %s!" % user.first_name)
+
+#     return redirect('/%s' % user.id)
+
+#     # NEW USER FLOW
+#     if username and password == "nerdy_shnerdy_admin":
+        
+#         print first_name, new_username, new_password
+#         flash("Whaddup, new user!")
+
+#         return redirect('/')
 
