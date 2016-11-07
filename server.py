@@ -206,7 +206,10 @@ def add_terms():
     db.session.add(new_category)
     db.session.commit()
 
-    return "'%s' has been added as a category!" % category
+    results_dict = {'message' : "'%s' has been added as a category!" % category,
+                    "category_name" : category}
+
+    return jsonify(results_dict)
 
 @app.route('/logout')
 def logout_user():
