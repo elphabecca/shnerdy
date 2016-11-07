@@ -5,18 +5,53 @@
 <h1>Search Shnerdy!</h1>
 
 {% if terms == [] %}
-<p>Whoops -- looks like you haven't created any searches yet. Add some below!</p>
+<p>Looks like you haven't created any searches yet. Add some below!</p>
 {% endif %}
 
-<form>
+<form action='/add_terms' id="cat_add_form" method="POST">
     Category Name: <input type="text" id="category" name="category">
-    <input type="button" id="category_add" value="Add Category">
-</form>
-
-{{ terms }}
-
-<form action="/display_results" id="test_button">Get items from Etsy API
-<input type="submit" id="etsy_submit" value="Testing">
+    <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
+    <input type="submit" id="category_add" value="Add Category">
 </form><br><br>
+
+<div id="term_list">Your Categories:
+    <form>
+        {% for term in terms %}
+            <input type="radio">{{ term.term }}<br>
+        {% endfor %}<br><br>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    
+    function showConfirmation(results) {
+        alert(results);
+        $('#category').val("");
+    }
+    
+    function submitCategory(evt) {
+        evt.preventDefault();
+
+        var formInputs = {
+            "category" : $('#category').val(),
+            "user_id" : $('#user_id').val()
+        };
+
+    $.post("/add_terms",
+            formInputs,
+            showConfirmation);
+
+    console.dir(evt)
+    }
+
+    $('#cat_add_form').on('submit', submitCategory)
+</script>
+
+<div>
+    <form action="/display_results" id="test_button">Get items from Etsy API
+<input type="submit" id="etsy_submit" value="Testing">
+</form>
+</div>
 
 {% endblock %}

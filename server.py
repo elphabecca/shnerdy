@@ -112,7 +112,9 @@ def yay():
     user = User.query.filter(User.oauth_id == google_user_id).first()
 
     if not user:
-        new_user = User(first_name=google_first_name, email=google_email, oauth_id=google_user_id)
+        new_user = User(first_name=google_first_name,
+                        email=google_email,
+                        oauth_id=google_user_id)
         db.session.add(new_user)
         db.session.commit()
         user = User.query.filter(User.oauth_id == google_user_id).first()
@@ -174,7 +176,9 @@ def show_results():
 
     # result_list = json_response["results"]
 
-    return render_template("display_results.html", result_list=result_list, num_items=num_items)
+    return render_template("display_results.html",
+                           result_list=result_list,
+                           num_items=num_items)
 
 
 @app.route('/<int:user_id>')
@@ -184,14 +188,29 @@ def show_user_terms(user_id):
     user = User.query.get(user_id)
     terms = Term.query.filter(Term.user_id == user_id).all()
 
-    print terms
+    return render_template('user_page.html',
+                            user=user,
+                            terms=terms)
 
-    return render_template('user_page.html', user=user, terms=terms)
 
+@app.route('/add_terms', methods=['POST'])
+def add_terms():
+    """Add categories and terms to the user's detail page."""
+
+    category = str(request.form.get('category'))
+    user_id = int(request.form.get('user_id'))
+
+    # Add the new category to the db:
+    new_category = Term(term=category,
+                    user_id=user_id)
+    db.session.add(new_category)
+    db.session.commit()
+
+    return "'%s' has been added as a category!" % category
 
 @app.route('/logout')
 def logout_user():
-    """Log the Shnerdy User out."""
+    """Log the Shnerdy User out, delete their access token from the session."""
 
     del session['access_token']
     flash("You've successfully logged out of Shnerdy.")
