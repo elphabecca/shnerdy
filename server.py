@@ -237,6 +237,8 @@ def add_term():
                     "term_name" : term,
                     "parent_id" : parent_id}
 
+    print "All Good Thru def ADD TERM"
+
     return jsonify(results_dict)
 
 @app.route('/logout')

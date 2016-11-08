@@ -16,8 +16,9 @@
 
 <div id="term_div">Your Categories:
         {% for category in categories %}
-        <form class="term_add_form" method="POST">
-            <input type="radio" id="category_name">{{ category.term }}<br>
+            <form class="term_add_form" method="POST">
+            <label class="category_name">{{ category.term }}</label><br>
+                
                     <input type="text" class="new_term_box" name="new_term_box">
                     <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
                     <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
@@ -39,7 +40,7 @@
     // LOGIC FOR CATEGORIES
     function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        var html = '<input type="radio">' + categoryName + '<br><form action="/add_term" id="term_add_form" method="POST"><input type="text" id="new_term_box" name="new_term_box"><input type="hidden" id="user_id_term" name="user_id" value=' + userId + '><input type="hidden" id="parent_id" name="parent_id" value=' + categoryId + '><input type="submit" id="term_add" value="Add Search Term"><br></form>';
+        var html = '<form class="term_add_form" method="POST"><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add Search Term</button></form><div id="cat_term' + categoryId + '"></div>';
         return html;
     }
 
@@ -53,6 +54,7 @@
                                                 results.user_id,
                                                 results.category_id);
         $('#term_div').append(someHtml);
+        $('#' + results.category_id).on('click', submitTerm);
     }
     
     function submitCategory(evt) {
