@@ -234,7 +234,8 @@ def add_term():
     db.session.commit()
 
     results_dict = {'message' : "'%s' has been added as a term!" % term,
-                    "term_name" : term}
+                    "term_name" : term,
+                    "parent_id" : parent_id}
 
     return jsonify(results_dict)
 

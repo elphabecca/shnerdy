@@ -23,11 +23,13 @@
                     <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
                     <button class="term_button">Add Search Term</button>
                 </form>
+                    <div id="cat_term{{ category.id }}">
                         {% for term in terms %}
                             {% if term.parent_id == category.id %}
                                 <li>{{ term.term }}</li>
                             {% endif %}
                         {% endfor %}
+                    </div>
         {% endfor %}
 </div><br><br>
 
@@ -71,6 +73,12 @@
     $('#cat_add_form').on('submit', submitCategory);
 
     // LOGIC FOR TERMS
+    function makeTermInputElement(termName){
+        // make a string of HTML
+        var html = '<li>' + termName + '</li>';
+        return html;
+    }
+
     function showConfirmationTerm(results) {
         // alert the user their term has been added
         // empty the text area of the form
@@ -78,6 +86,10 @@
         alert(results.message);
         var box = $('.new_term_box');
         box.val("");
+        var term = results.term_name;
+        var termHtml = makeTermInputElement(term);
+        var divName = '#cat_term' + results.parent_id
+        $(divName).append(termHtml);
     }
 
     function submitTerm(evt) {
