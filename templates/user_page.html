@@ -4,55 +4,107 @@
 
 <h1>Search Shnerdy!</h1>
 
-{% if terms == [] %}
+{% if categories == [] %}
 <p>Looks like you haven't created any searches yet. Add some below!</p>
 {% endif %}
 
-<form action='/add_terms' id="cat_add_form" method="POST">
-    Category Name: <input type="text" id="category" name="category">
-    <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
+<form action='/add_category' id="cat_add_form" method="POST">
+    Category Name: <input type="text" id="new_category_box" name="category">
+    <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
     <input type="submit" id="category_add" value="Add Category">
 </form><br><br>
 
 <div id="term_div">Your Categories:
-    <form id="term_form">
-        {% for term in terms %}
-            <input type="radio">{{ term.term }}<br>
+        {% for category in categories %}
+        <form class="term_add_form" method="POST">
+            <input type="radio" id="category_name">{{ category.term }}<br>
+                    <input type="text" class="new_term_box" name="new_term_box">
+                    <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
+                    <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
+                    <button class="term_button">Add Search Term</button>
+                </form>
+                        {% for term in terms %}
+                            {% if term.parent_id == category.id %}
+                                <li>{{ term.term }}</li>
+                            {% endif %}
+                        {% endfor %}
         {% endfor %}
-    </form>
 </div><br><br>
 
 
 <script type="text/javascript">
     
-    function makeCategoryInputElement(categoryName){
+    // LOGIC FOR CATEGORIES
+    function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        return '<input type="radio">' + categoryName;
+        var html = '<input type="radio">' + categoryName + '<br><form action="/add_term" id="term_add_form" method="POST"><input type="text" id="new_term_box" name="new_term_box"><input type="hidden" id="user_id_term" name="user_id" value=' + userId + '><input type="hidden" id="parent_id" name="parent_id" value=' + categoryId + '><input type="submit" id="term_add" value="Add Search Term"><br></form>';
+        return html;
     }
 
     function showConfirmation(results) {
-        alert(results["message"]);
-        $('#category').val("");
-        var someHtml = makeCategoryInputElement(results.category_name);
-        $('#term_form').append(someHtml);
+        // alert the user their category has been added
+        // empty the text area of the form
+        // append their new category to the list which displays on their page
+        alert(results.message);
+        $('#new_category_box').val("");
+        var someHtml = makeCategoryInputElement(results.category_name,
+                                                results.user_id,
+                                                results.category_id);
+        $('#term_div').append(someHtml);
     }
     
     function submitCategory(evt) {
         evt.preventDefault();
 
         var formInputs = {
-            "category" : $('#category').val(),
-            "user_id" : $('#user_id').val()
+            "category" : $('#new_category_box').val(),
+            "user_id" : $('#user_id_category').val()
         };
 
-        $.post("/add_terms",
+        $.post("/add_category",
             formInputs,
             showConfirmation);
 
-        console.dir(evt)
+        console.dir(evt);
     }
 
-    $('#cat_add_form').on('submit', submitCategory)
+    $('#cat_add_form').on('submit', submitCategory);
+
+    // LOGIC FOR TERMS
+    function showConfirmationTerm(results) {
+        // alert the user their term has been added
+        // empty the text area of the form
+        // append their new term to the list which displays on their page
+        alert(results.message);
+        var box = $('.new_term_box');
+        box.val("");
+    }
+
+    function submitTerm(evt) {
+        evt.preventDefault();
+
+        var thingTheyClickedOn = $(evt.currentTarget);
+        var listOfInputs = thingTheyClickedOn.siblings();
+        var termInput = $(listOfInputs[2]);
+        var userInfo = $(listOfInputs[3]);
+        var catInfo = $(listOfInputs[4]);
+
+       var formInputs = {
+            "term" : termInput.val(),
+            "user_id" : userInfo.val(),
+            "parent_id" : catInfo.val()
+        };
+
+        console.log(formInputs);
+
+        $.post("/add_term",
+            formInputs,
+            showConfirmationTerm);
+
+        console.dir(evt);
+    }
+    
+    $('.term_button').on('click', submitTerm);
 </script>
 
 <div>

@@ -186,16 +186,18 @@ def show_user_terms(user_id):
     """Show the user their categories and terms, allow them to add new terms and edit fields."""
 
     user = User.query.get(user_id)
-    terms = Term.query.filter(Term.user_id == user_id).all()
+    terms = Term.query.filter(Term.user_id == user_id, Term.parent_id != None).all()
+    categories = Term.query.filter(Term.user_id == user_id, Term.parent_id == None).all()
 
     return render_template('user_page.html',
                             user=user,
+                            categories=categories,
                             terms=terms)
 
 
-@app.route('/add_terms', methods=['POST'])
-def add_terms():
-    """Add categories and terms to the user's detail page."""
+@app.route('/add_category', methods=['POST'])
+def add_category():
+    """Add category to the db."""
 
     category = str(request.form.get('category'))
     user_id = int(request.form.get('user_id'))
@@ -206,8 +208,33 @@ def add_terms():
     db.session.add(new_category)
     db.session.commit()
 
+    category_object = Term.query.filter(Term.term == category).first()
+    category_id = category_object.id
+
     results_dict = {'message' : "'%s' has been added as a category!" % category,
-                    "category_name" : category}
+                    "category_name" : category,
+                    "user_id" : user_id,
+                    "category_id" : category_id}
+
+    return jsonify(results_dict)
+
+@app.route('/add_term', methods=['POST'])
+def add_term():
+    """Add term to the db."""
+
+    term = str(request.form.get('term'))
+    user_id = int(request.form.get('user_id'))
+    parent_id = int(request.form.get('parent_id'))
+
+    # Add the new category to the db:
+    new_term = Term(term=term,
+                    user_id=user_id,
+                    parent_id=parent_id)
+    db.session.add(new_term)
+    db.session.commit()
+
+    results_dict = {'message' : "'%s' has been added as a term!" % term,
+                    "term_name" : term}
 
     return jsonify(results_dict)
 
