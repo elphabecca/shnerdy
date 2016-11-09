@@ -4,17 +4,23 @@
 
 <h1>Search Shnerdy!</h1>
 
-<!-- {% if categories == [] %}
+{% if categories == [] %}
+<div id="if_cat-empty">
 <p>Looks like you haven't created any searches yet. Add some below!</p>
-{% endif %} -->
+</div>
+{% endif %}
 
+{% if categories != [] %}
+<div id="snearch_form">
 <form action="/listy" method="POST">
     <select id="category_dropdown" name="categories">
         <option name="cat_drop_opt" value="cat_name">Please Select...</option>
     </select>
         <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
         <input type="submit" name="search_shirts" value="Search for me, Shnerdy!">
-</form>
+</form><br><br>
+</div>
+{% endif %}
 
 <script type="text/javascript">
 
@@ -89,6 +95,8 @@
                                                 results.user_id,
                                                 results.category_id);
         $('#term_div').append(someHtml);
+        $('#if_cat-empty').hide()
+        $('#snearch_form').show()
         $('#' + results.category_id).on('click', submitTerm);
     }
     

@@ -254,6 +254,7 @@ def add_term():
 
     return jsonify(results_dict)
 
+
 @app.route('/listy', methods=['POST'])
 def show_me_list():
     """Given the user ID and the Category name, generate a list of terms to search Etsy for."""
@@ -262,16 +263,12 @@ def show_me_list():
     user_id = int(request.form.get('user_id'))
     list_o_terms = [category]
 
-    print "Muggle", category, user_id, list_o_terms
-
     parent_id = Term.query.filter(Term.term == category).first()
     parent_id = parent_id.id
     terms = Term.query.filter(Term.user_id == user_id, Term.parent_id == parent_id).all()
 
     for term in terms:
         list_o_terms.append(str(term.term))
-
-    print list_o_terms
 
     return render_template('user_list_terms.html', list_o_terms=list_o_terms)
 
