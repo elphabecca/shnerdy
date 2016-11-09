@@ -3,5 +3,8 @@
 {% block content %}
 
 <p>THIS IS THE USER_LIST_PAGE</p>
+{% for term in list_o_terms %}
+<li>{{ term }}</li>
+{% endfor %}
 
 {% endblock %}

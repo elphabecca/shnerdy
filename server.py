@@ -195,6 +195,21 @@ def show_user_terms(user_id):
                             terms=terms)
 
 
+@app.route('/update_dropdown', methods=['POST'])
+def update_dropdown():
+    """Given the user id, returns a list of categories for that user."""
+
+    user_id = request.form.get('user_id')
+    categories = Term.query.filter(Term.user_id == user_id, Term.parent_id == None).all()
+    cat_list = []
+    for category in categories:
+        cat_list.append(category.term)
+
+    results_dict = {'cat_list' : cat_list}
+
+    return jsonify(results_dict)
+
+
 @app.route('/add_category', methods=['POST'])
 def add_category():
     """Add category to the db."""
@@ -237,9 +252,29 @@ def add_term():
                     "term_name" : term,
                     "parent_id" : parent_id}
 
-    print "All Good Thru def ADD TERM"
-
     return jsonify(results_dict)
+
+@app.route('/listy', methods=['POST'])
+def show_me_list():
+    """Given the user ID and the Category name, generate a list of terms to search Etsy for."""
+
+    category = str(request.form.get('categories'))
+    user_id = int(request.form.get('user_id'))
+    list_o_terms = [category]
+
+    print "Muggle", category, user_id, list_o_terms
+
+    parent_id = Term.query.filter(Term.term == category).first()
+    parent_id = parent_id.id
+    terms = Term.query.filter(Term.user_id == user_id, Term.parent_id == parent_id).all()
+
+    for term in terms:
+        list_o_terms.append(str(term.term))
+
+    print list_o_terms
+
+    return render_template('user_list_terms.html', list_o_terms=list_o_terms)
+
 
 @app.route('/logout')
 def logout_user():
