@@ -2,9 +2,16 @@
 
 {% block content %}
 
-<p>THIS IS THE USER_LIST_PAGE</p>
-{% for term in list_o_terms %}
-<li>{{ term }}</li>
-{% endfor %}
+<h2>Select the terms you'd like to search for:</h2>
+
+<form action="/display_results" method="POST">
+    
+    {% for term in list_o_terms %}
+    <input type="checkbox" name="search_term" value="{{ term }}" checked="checked">{{ term }}<br>
+    {% endfor %}<br>
+
+    <input type="submit" id="search_terms" name="search_terms" value="SHNEARCH!">
+
+</form>
 
 {% endblock %}

@@ -37,8 +37,9 @@ def index():
     """Shnerdy introduction (need), login/OAuth form (need), logout button if user not in session (need)"""
 
     access_token = session.get('access_token')
+    session_user_id = session.get('user')
 
-    return render_template('index.html', access_token=access_token)
+    return render_template('index.html', access_token=access_token, session_user_id=session_user_id)
 
 
 # OAUTH HANDLING - @app.route("/oauth"), @app.route(REDIRECT_URI), @app.route('/login'), @google.tokengetter
@@ -118,19 +119,19 @@ def yay():
         db.session.add(new_user)
         db.session.commit()
         user = User.query.filter(User.oauth_id == google_user_id).first()
+        session['user'] = user.id
         flash("Welcome to Shnerdy, %s!" % google_first_name)
 
         return redirect('/%s' % user.id)
 
+    session['user'] = user.id
     flash("Welcome back, %s!" % user.first_name)
     return redirect('/%s' % user.id)
 
 
 # ETSY API FUNCTIONS
-def get_many_results():
+def get_many_results(search_list):
     """Taking in a list of search terms, return all search results."""
-
-    search_list = ['Wizard of Oz', 'Yellow Brick Road']
 
     full_response = []
     for term in search_list:
@@ -166,25 +167,40 @@ def get_etsy_stuff(search_term):
 
     return json_response
 
-@app.route('/display_results')
+
+@app.route('/test', methods=['POST'])
+def get_list_of_search_terms():
+    """A testing ground for whatever I'm doing."""
+
+    user_id = session.get('user')
+    search_terms = request.form.getlist('search_term')
+    print search_terms, type(search_terms), user_id, type(user_id)
+
+    return redirect('/%s' % user_id)
+
+
+@app.route('/display_results', methods=['POST'])
 def show_results():
     """Display all the shirt results (Title, price, image(s), url) to the User"""
 
-    result_list = get_many_results()
+    session_user_id = session.get('user')
 
+    search_terms = request.form.getlist('search_term')
+    result_list = get_many_results(search_terms)
     num_items = len(result_list)
-
     # result_list = json_response["results"]
 
     return render_template("display_results.html",
                            result_list=result_list,
-                           num_items=num_items)
+                           num_items=num_items,
+                           session_user_id=session_user_id)
 
 
 @app.route('/<int:user_id>')
 def show_user_terms(user_id):
     """Show the user their categories and terms, allow them to add new terms and edit fields."""
 
+    session_user_id = session.get('user')
     user = User.query.get(user_id)
     terms = Term.query.filter(Term.user_id == user_id, Term.parent_id != None).all()
     categories = Term.query.filter(Term.user_id == user_id, Term.parent_id == None).all()
@@ -192,7 +208,8 @@ def show_user_terms(user_id):
     return render_template('user_page.html',
                             user=user,
                             categories=categories,
-                            terms=terms)
+                            terms=terms,
+                            session_user_id=session_user_id)
 
 
 @app.route('/update_dropdown', methods=['POST'])
@@ -259,6 +276,7 @@ def add_term():
 def show_me_list():
     """Given the user ID and the Category name, generate a list of terms to search Etsy for."""
 
+    session_user_id = session.get('user')
     category = str(request.form.get('categories'))
     user_id = int(request.form.get('user_id'))
     list_o_terms = [category]
@@ -270,7 +288,9 @@ def show_me_list():
     for term in terms:
         list_o_terms.append(str(term.term))
 
-    return render_template('user_list_terms.html', list_o_terms=list_o_terms)
+    return render_template('user_list_terms.html',
+                            list_o_terms=list_o_terms,
+                            session_user_id=session_user_id)
 
 
 @app.route('/logout')
@@ -278,6 +298,7 @@ def logout_user():
     """Log the Shnerdy User out, delete their access token from the session."""
 
     del session['access_token']
+    del session['user']
     flash("You've successfully logged out of Shnerdy.")
     return redirect('/')
 

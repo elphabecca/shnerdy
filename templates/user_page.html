@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<script type="text/javascript">$('#user_page_link').hide();</script>
+
 <h1>Search Shnerdy!</h1>
 
 {% if categories == [] %}
@@ -17,7 +19,7 @@
         <option name="cat_drop_opt" value="cat_name">Please Select...</option>
     </select>
         <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
-        <input type="submit" name="search_shirts" value="Search for me, Shnerdy!">
+        <input type="submit" name="search_shirts" value="Select Search Category">
 </form><br><br>
 </div>
 {% endif %}

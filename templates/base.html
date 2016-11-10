@@ -9,7 +9,13 @@
 
     <!-- LOGOUT OPTION DISPLAYED: ? -->
     {% if session['access_token'] %}
-    <a href="/logout">Logout</a>
+        <a href="/logout">Logout</a>
+    {% endif %}
+
+    {% if session['user'] %}
+        <div id="user_page_link">
+            <a href="/{{ session_user_id }}">Your Categories</a>
+        </div>
     {% endif %}
     <hr>
 
