@@ -129,54 +129,43 @@ def yay():
     return redirect('/%s' % user.id)
 
 
-# ETSY API FUNCTIONS
-def get_many_results(search_list):
-    """Taking in a list of search terms, return all search results."""
+# ********** ETSY API FUNCTIONS **********
+# def get_many_results(search_list):
+#     """Taking in a list of search terms, return all search results."""
 
-    full_response = []
-    for term in search_list:
-        term_results = get_etsy_stuff(term)
-        term_results_list = term_results["results"]
-        full_response.extend(term_results_list)
+#     full_response = []
+#     for term in search_list:
+#         term_results = get_etsy_stuff(term)
+#         term_results_list = term_results["results"]
+#         full_response.extend(term_results_list)
 
-    return full_response
+#     return full_response
 
-def get_etsy_stuff(search_term):
-    """Return search_term TShirts from the etsy API"""
+# def get_etsy_stuff(search_term):
+#     """Return search_term TShirts from the etsy API"""
 
-    # The details of the search
-    url = 'https://openapi.etsy.com/v2/listings/active?api_key=' + KEYSTRING
-    payload = {'tags' : search_term,
-               'includes': 'Images(url_170x135)',
-               'limit' : 100,
-               'category' : 'Clothing/Shirt'}
+#     # The details of the search
+#     url = 'https://openapi.etsy.com/v2/listings/active?api_key=' + KEYSTRING
+#     payload = {'tags' : search_term,
+#                'includes': 'Images(url_170x135)',
+#                'limit' : 100,
+#                'category' : 'Clothing/Shirt'}
 
-    # The response, and a loop to get pages of the response in one json dictionary.
-    response = requests.get(url, params=payload)
-    json_response = response.json()
-    pages = (json_response["count"]/100)
+#     # The response, and a loop to get pages of the response in one json dictionary.
+#     response = requests.get(url, params=payload)
+#     json_response = response.json()
+#     pages = (json_response["count"]/100)
 
-    offset = 100
-    for page in range(pages):
-        moar_response = requests.get(response.url + "&offset=" + str(offset))
-        moar_json = moar_response.json()
-        moar_list = moar_json["results"]
-        json_response["results"].extend(moar_list)
-        # print "GERBIL", len(json_response["results"])
-        offset += 100
+#     offset = 100
+#     for page in range(pages):
+#         moar_response = requests.get(response.url + "&offset=" + str(offset))
+#         moar_json = moar_response.json()
+#         moar_list = moar_json["results"]
+#         json_response["results"].extend(moar_list)
+#         # print "GERBIL", len(json_response["results"])
+#         offset += 100
 
-    return json_response
-
-
-@app.route('/test', methods=['POST'])
-def get_list_of_search_terms():
-    """A testing ground for whatever I'm doing."""
-
-    user_id = session.get('user')
-    search_terms = request.form.getlist('search_term')
-    print search_terms, type(search_terms), user_id, type(user_id)
-
-    return redirect('/%s' % user_id)
+#     return json_response
 
 
 @app.route('/display_results', methods=['POST'])
@@ -292,6 +281,71 @@ def show_me_list():
                             list_o_terms=list_o_terms,
                             session_user_id=session_user_id)
 
+
+def get_etsy_count_and_few_results(search_term):
+    """Return counts of shirts per term from the Etsy API"""
+
+    # The details of the search
+    url = 'https://openapi.etsy.com/v2/listings/active?api_key=' + KEYSTRING
+    payload = {'tags' : search_term,
+               'includes': 'Images(url_170x135)',
+               'limit' : 10,
+               'category' : 'Clothing/Shirt'}
+
+    # The response, and a loop to get pages of the response in one json dictionary.
+    response = requests.get(url, params=payload)
+    json_response = response.json()
+    count = json_response["count"]
+    results = json_response["results"]
+
+    return (count, results)
+
+
+@app.route('/snearch_summary', methods=['POST'])
+def add_search_to_session():
+    """return a result summary to the user."""
+
+    session_user_id = session.get('user')
+    search_terms = request.form.getlist('search_term')
+    session['curr_search'] = {}
+    session['searched_ids'] = []
+    result_sum = 0
+
+    for term in search_terms:
+        count, results = get_etsy_count_and_few_results(term)
+        session['curr_search'][term] = {'count' : count}
+        term_dict = session['curr_search'][term]
+        term_dict["items"] = []
+        term_dict_listing = term_dict["items"]
+
+        # If there are no results for a particular term:
+            # a) add a flash message to alert them
+            # b) don't add anything else about the term to the session
+        if count == 0:
+            flash("The search for '%s' didn't return any results." % term)
+            break
+
+        for listing in results:
+            temp_dict = {}
+            temp_dict["etsy_id"] = listing["listing_id"]
+            session['searched_ids'].append(listing["listing_id"])
+            temp_dict["tags"] = listing["tags"]
+            temp_dict["image_url"] = listing["Images"][0]["url_170x135"]
+            temp_dict["price"] = listing["price"]
+            temp_dict["url"] = listing["url"]
+            temp_dict["user_search_term"] = term
+
+            term_dict_listing.append(temp_dict)
+            
+        
+        result_sum += int(count)
+
+    session['result_count'] = result_sum
+
+    return render_template('snearch_summary.html',
+                           search_terms=search_terms,
+                           session_user_id=session_user_id)
+    
 
 @app.route('/logout')
 def logout_user():

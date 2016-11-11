@@ -12,16 +12,11 @@
     <li>Step 3: Try not to buy all the shirts...</li>
 </ul>
 
-<form action="/display_results" id="test_button">Get items from Etsy API
-<input type="submit" id="etsy_submit" value="Testing">
-</form><br><br>
-
-
 {% if access_token == None %}
 
-<form action="/oauth" method="POST">
-   <input type="submit" id="oauth" name="oauth" value="Login with Google"> 
-</form>
+    <form action="/oauth" method="POST">
+       <input type="submit" id="oauth" name="oauth" value="Login with Google"> 
+    </form>
 
 {% endif %}
 

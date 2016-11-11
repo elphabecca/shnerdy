@@ -4,7 +4,7 @@
 
 <h2>Select the terms you'd like to search for:</h2>
 
-<form action="/display_results" method="POST">
+<form action="/snearch_summary" method="POST">
     
     {% for term in list_o_terms %}
     <input type="checkbox" name="search_term" value="{{ term }}" checked="checked">{{ term }}<br>

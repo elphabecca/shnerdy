@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>Hey Girl. I see you passed your test.</h2>
+<h2>Your Snearch Summary:</h2>
 
 {% for term in search_terms %}
 <li>{{ term }} ({{ session.curr_search[term]['count'] }} results)</li>
@@ -10,6 +10,7 @@
 
 <p>Total search results: {{ session.result_count }}</p>
 
+<p>{{ session.searched_ids }}</p>
 <p>{{ session.curr_search }}</p>
 
 {% endblock %}
