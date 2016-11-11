@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>Your Snearch Summary:</h2>
+<h3>Your Snearch Summary:</h3>
 
 {% for term in search_terms %}
 <li>{{ term }} ({{ session.curr_search[term]['count'] }} results)</li>
@@ -10,7 +10,32 @@
 
 <p>Total search results: {{ session.result_count }}</p>
 
+<h3>Your Snearch Results!</h3>
+
+<div id=snearch_results_div>
+
+    <li id="image">IMAGE PLACEHOLDER</li>
+    <li id="price">PRICE PLACEHOLDER</li>
+    <li id="link">SHIRT LINK PLACEHOLDER</li>
+    <input type="button" id="next" value="Next Shirt, Please!"></button>
+
+</div>
+
+<script type="text/javascript">
+
+    function requestNewShirt(evt) {
+        alert("Please hold.")
+        // $.post("/new_shirt_please",
+        //     data,
+        //     successHandler);
+
+        console.dir(evt)
+    }
+    
+    $('#next').on('click', requestNewShirt);
+
+</script>
+
 <p>{{ session.searched_ids }}</p>
-<p>{{ session.curr_search }}</p>
 
 {% endblock %}

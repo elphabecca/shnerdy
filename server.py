@@ -300,9 +300,30 @@ def get_etsy_count_and_few_results(search_term):
 
     return (count, results)
 
+def add_search_to_session(term, count, results):
+    """Add search results to the session"""
+
+    session['curr_search'][term] = {'count' : count,
+                                    'items' : []}
+    term_dict_listing = session['curr_search'][term]["items"]
+    
+    for listing in results:
+            session['searched_ids'].append(listing["listing_id"])
+            temp_dict = {}
+            temp_dict["etsy_id"] = listing["listing_id"]
+            temp_dict["tags"] = listing["tags"]
+            temp_dict["image_url"] = listing["Images"][0]["url_170x135"]
+            temp_dict["price"] = listing["price"]
+            temp_dict["url"] = listing["url"]
+            temp_dict["user_search_term"] = term
+
+            term_dict_listing.append(temp_dict)
+
+    print "%s items for '%s' have now been added to the session." % (len(results), term)
+
 
 @app.route('/snearch_summary', methods=['POST'])
-def add_search_to_session():
+def create_shnummary():
     """return a result summary to the user."""
 
     session_user_id = session.get('user')
@@ -313,32 +334,12 @@ def add_search_to_session():
 
     for term in search_terms:
         count, results = get_etsy_count_and_few_results(term)
-        session['curr_search'][term] = {'count' : count}
-        term_dict = session['curr_search'][term]
-        term_dict["items"] = []
-        term_dict_listing = term_dict["items"]
+        add_search_to_session(term, count, results)
+        result_sum += int(count)
 
-        # If there are no results for a particular term:
-            # a) add a flash message to alert them
-            # b) don't add anything else about the term to the session
+        # If there are no results for a particular term add a flash message to alert them
         if count == 0:
             flash("The search for '%s' didn't return any results." % term)
-            break
-
-        for listing in results:
-            temp_dict = {}
-            temp_dict["etsy_id"] = listing["listing_id"]
-            session['searched_ids'].append(listing["listing_id"])
-            temp_dict["tags"] = listing["tags"]
-            temp_dict["image_url"] = listing["Images"][0]["url_170x135"]
-            temp_dict["price"] = listing["price"]
-            temp_dict["url"] = listing["url"]
-            temp_dict["user_search_term"] = term
-
-            term_dict_listing.append(temp_dict)
-            
-        
-        result_sum += int(count)
 
     session['result_count'] = result_sum
 
