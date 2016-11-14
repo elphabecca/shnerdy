@@ -2,16 +2,6 @@
 
 {% block content %}
 
-<script type="text/javascript">
-    function success(results) {
-        console.log(results);
-    };
-
-    $(document).ready(function() {
-        $.get("/shnerdy_scale_set", success);
-    });
-</script>
-
 <h3>Your Snearch Summary:</h3>
 
 {% for term in search_terms %}
@@ -20,12 +10,12 @@
 
 <p>Total search results: {{ session.result_count }}</p>
 
-<h3>Your Snearch Results!</h3>
+<h3>Snearch Results:</h3>
 
 <div id=snearch_results_div>
 
+<p>You found this shirt by searching: '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
     <img id="image" src="https://s-media-cache-ak0.pinimg.com/originals/e0/f5/a5/e0f5a5f8c2e378df4fddd75e26e9a5a3.gif">
-    <li>You found this shirt by searching: '<label id="user_search_term">User search term placeholder</label>'</li>
     <li id="price">PRICE</li>
     <li><a id="link" href="http://stackoverflow.com/questions/179713/how-to-change-the-href-for-a-hyperlink-using-jquery">Shirt Link</a></li>
     <input type="button" id="next" value="Next Shirt, Please!"></button>
@@ -53,6 +43,13 @@
     }
     
     $('#next').on('click', requestNewShirt);
+
+    $(document).ready(function() {
+        $.get("/shnerdy_scale_set", function success(results) {
+            console.log(results);
+        });
+        $.post("/new_shirt_please", displayNewShirt);
+    });
 
 </script>
 

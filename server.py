@@ -4,7 +4,6 @@ import requests
 import os
 import pdb
 from model import User, Term, connect_to_db, db
-import itertools
 
 app = Flask(__name__)
 
@@ -322,6 +321,8 @@ def add_search_to_session(term, count, results):
 
             term_dict_listing.append(temp_dict)
 
+    session.modified = True
+
     print "%s items for '%s' have now been added to the session." % (len(results), term)
 
 
@@ -380,17 +381,27 @@ def set_curr_search_term():
     return jsonify(search_terms)
 
 
-def cycle_search_terms(terms_list):
+def cycle_search_terms():
     """cycle systemactically through the available search terms."""
-    
-    return term in itertools.cycle(terms_list).next()
+    search_term_list = session['curr_terms_list']
+    curr_search_term = session['curr_search_term']
+    term_index = search_term_list.index(curr_search_term)
+
+    if term_index == len(search_term_list) - 1:
+        term_index = -1
+
+    next_term = search_term_list[term_index + 1]
+    session['curr_search_term'] = next_term
+    session.modified = True
+
+    return next_term
 
 
 @app.route('/new_shirt_please', methods=['POST'])
 def grab_display_shirt():
     """Grab a shirt to display to the user."""
 
-    term = session['curr_search_term']
+    term = cycle_search_terms()
     print "Whoop", term
 
     shirt_image_url, shirt_url, shirt_price = select_display_shirt(term)
@@ -402,7 +413,8 @@ def grab_display_shirt():
     
     # if etsy_id in searched_ids:
     #     flash("This is a duplicate!")
-
+    session.modified = True
+    
     return jsonify(shirt_data)
 
 @app.route('/logout')
