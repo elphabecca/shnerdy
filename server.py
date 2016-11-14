@@ -2,7 +2,9 @@ from flask import Flask, render_template, jsonify, request, session, redirect, f
 from flask_oauth import OAuth
 import requests
 import os
+import pdb
 from model import User, Term, connect_to_db, db
+import itertools
 
 app = Flask(__name__)
 
@@ -304,6 +306,7 @@ def add_search_to_session(term, count, results):
     """Add search results to the session"""
 
     session['curr_search'][term] = {'count' : count,
+                                    'countdown' : count,
                                     'items' : []}
     term_dict_listing = session['curr_search'][term]["items"]
     
@@ -342,11 +345,65 @@ def create_shnummary():
             flash("The search for '%s' didn't return any results." % term)
 
     session['result_count'] = result_sum
+    session.modified = True
 
     return render_template('snearch_summary.html',
                            search_terms=search_terms,
                            session_user_id=session_user_id)
+  
+
+def select_display_shirt(search_term):
+    """Select a shirt to display"""
+
+    display_shirt = session['curr_search'][search_term]['items'].pop()
+
+    shirt_image_url = display_shirt['image_url']
+    shirt_url = display_shirt['url']
+    shirt_price = display_shirt['price']
+    user_search_term = display_shirt['user_search_term']
+    session['curr_search'][search_term]['countdown'] -= 1
+    session.modified = True
+
+    return (shirt_image_url, shirt_url, shirt_price)
+
+@app.route('/shnerdy_scale_set')
+def set_curr_search_term():
+    """Set the curr_search_term for the session
+        LATER: set the first shirt for the page."""
+
+    search_terms = [ term for term in session['curr_search'].keys() \
+                          if session['curr_search'][term]['countdown'] != 0 ]
+    session['curr_terms_list'] = search_terms
+    session['curr_search_term'] = search_terms[0]
+    session.modified = True
+
+    return jsonify(search_terms)
+
+
+def cycle_search_terms(terms_list):
+    """cycle systemactically through the available search terms."""
     
+    return term in itertools.cycle(terms_list).next()
+
+
+@app.route('/new_shirt_please', methods=['POST'])
+def grab_display_shirt():
+    """Grab a shirt to display to the user."""
+
+    term = session['curr_search_term']
+    print "Whoop", term
+
+    shirt_image_url, shirt_url, shirt_price = select_display_shirt(term)
+
+    shirt_data = {'shirt_image_url' : shirt_image_url,
+                  'shirt_price' : shirt_price,
+                  'shirt_url' : shirt_url,
+                  'user_search_term' : term}
+    
+    # if etsy_id in searched_ids:
+    #     flash("This is a duplicate!")
+
+    return jsonify(shirt_data)
 
 @app.route('/logout')
 def logout_user():

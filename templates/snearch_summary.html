@@ -2,6 +2,16 @@
 
 {% block content %}
 
+<script type="text/javascript">
+    function success(results) {
+        console.log(results);
+    };
+
+    $(document).ready(function() {
+        $.get("/shnerdy_scale_set", success);
+    });
+</script>
+
 <h3>Your Snearch Summary:</h3>
 
 {% for term in search_terms %}
@@ -14,20 +24,30 @@
 
 <div id=snearch_results_div>
 
-    <li id="image">IMAGE PLACEHOLDER</li>
-    <li id="price">PRICE PLACEHOLDER</li>
-    <li id="link">SHIRT LINK PLACEHOLDER</li>
+    <img id="image" src="https://s-media-cache-ak0.pinimg.com/originals/e0/f5/a5/e0f5a5f8c2e378df4fddd75e26e9a5a3.gif">
+    <li>You found this shirt by searching: '<label id="user_search_term">User search term placeholder</label>'</li>
+    <li id="price">PRICE</li>
+    <li><a id="link" href="http://stackoverflow.com/questions/179713/how-to-change-the-href-for-a-hyperlink-using-jquery">Shirt Link</a></li>
     <input type="button" id="next" value="Next Shirt, Please!"></button>
 
-</div>
+</div><br><br>
 
 <script type="text/javascript">
 
+    function displayNewShirt(results) {
+        var shirt_url = results.shirt_url;
+        var shirt_price = results.shirt_price;
+        var shirt_image_url = results.shirt_image_url;
+        var user_search_term = results.user_search_term;
+
+        $('#image').attr('src', shirt_image_url);
+        $('#price').html(shirt_price);
+        $('#link').attr('href', shirt_url);
+        $('#user_search_term').html(user_search_term);
+    }
+
     function requestNewShirt(evt) {
-        alert("Please hold.")
-        // $.post("/new_shirt_please",
-        //     data,
-        //     successHandler);
+        $.post("/new_shirt_please", displayNewShirt);
 
         console.dir(evt)
     }
@@ -36,6 +56,12 @@
 
 </script>
 
-<p>{{ session.searched_ids }}</p>
+{{ session }}
+
+Current Search Terms: {% for term in session['curr_search'].keys() %}
+<li>Term: {{ term }}, Countdown: {{ session['curr_search'][term]['countdown'] }}</li>
+{% endfor %}
+
+<p>Searched IDs: {{ session.searched_ids }}</p>
 
 {% endblock %}
