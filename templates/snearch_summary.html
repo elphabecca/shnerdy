@@ -2,7 +2,52 @@
 
 {% block content %}
 
-<h3>Your Snearch Summary:</h3>
+<h3>Snearch Summary:</h3>
+
+{% for term in search_terms %}
+<li>{{ term }} ( {{ curr_search_dict[term]['count'] }} results)</li>
+{% endfor %}
+
+<p>Total search results: {{ result_sum }}</p>
+
+<h3>Snearch Results:</h3>
+
+<div id=snearch_results_div>
+
+<p>You found this shirt by searching: 
+    '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
+        <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
+        <li id="price">PRICE</li>
+        <li><a id="link" href="http://http://www.kittenwar.com/">Shirt Link</a></li>
+        <input type="button" id="next" value="Next Shirt, Please!"></button>
+
+</div><br><br>
+
+{{ curr_search_dict.keys() }}
+
+<script type="text/javascript">
+
+    var currSearchDict = {{ curr_search_dict|tojson }};
+    var allSearchTerms = Object.keys(currSearchDict);
+
+    var nonZeroSearchTerms = []
+    function addSearchTerms(allSearchTerms) {
+        for (var i = 0; i < allSearchTerms.length; i++) {
+            if (currSearchDict[allSearchTerms[i]]['count'] !== 0) {
+                nonZeroSearchTerms.push(allSearchTerms[i]);
+            }
+        }
+    }
+    addSearchTerms(allSearchTerms)
+
+</script>
+
+
+{% endblock %}
+
+
+
+<!-- ********** DEAD CODE: **********
 
 {% for term in search_terms %}
 <li>{{ term }} ({{ session.curr_search[term]['count'] }} results)</li>
@@ -15,7 +60,7 @@
 <div id=snearch_results_div>
 
 <p>You found this shirt by searching: '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
-    <img id="image" src="https://s-media-cache-ak0.pinimg.com/originals/e0/f5/a5/e0f5a5f8c2e378df4fddd75e26e9a5a3.gif">
+    <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
     <li id="price">PRICE</li>
     <li><a id="link" href="http://stackoverflow.com/questions/179713/how-to-change-the-href-for-a-hyperlink-using-jquery">Shirt Link</a></li>
     <input type="button" id="next" value="Next Shirt, Please!"></button>
@@ -45,20 +90,15 @@
     $('#next').on('click', requestNewShirt);
 
     $(document).ready(function() {
-        $.get("/shnerdy_scale_set", function success(results) {
+        $.get("/shnerdy_scale_set", function(results) {
             console.log(results);
+            $.post("/new_shirt_please", displayNewShirt);
         });
-        $.post("/new_shirt_please", displayNewShirt);
+        
     });
 
 </script>
 
-{{ session }}
-
 Current Search Terms: {% for term in session['curr_search'].keys() %}
 <li>Term: {{ term }}, Countdown: {{ session['curr_search'][term]['countdown'] }}</li>
-{% endfor %}
-
-<p>Searched IDs: {{ session.searched_ids }}</p>
-
-{% endblock %}
+{% endfor %} -->
