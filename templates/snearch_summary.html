@@ -30,7 +30,7 @@
     var currSearchDict = {{ curr_search_dict|tojson }};
     var allSearchTerms = Object.keys(currSearchDict);
 
-    var nonZeroSearchTerms = []
+    var nonZeroSearchTerms = [];
     function addSearchTerms(allSearchTerms) {
         for (var i = 0; i < allSearchTerms.length; i++) {
             if (currSearchDict[allSearchTerms[i]]['count'] !== 0) {
@@ -38,7 +38,53 @@
             }
         }
     }
-    addSearchTerms(allSearchTerms)
+    addSearchTerms(allSearchTerms);
+
+    var currSearchTerm;
+    function termCycle() {
+        // Cycle through the nonZeroSearchTerms to get the next currSearchTerm
+        if (currSearchTerm == undefined) {
+            currSearchTerm = nonZeroSearchTerms[0];
+            return currSearchTerm;
+        }
+        else {
+            var index = nonZeroSearchTerms.indexOf(currSearchTerm);
+            if (index == nonZeroSearchTerms.length - 1) {
+                index = -1;
+            }
+            currSearchTerm = nonZeroSearchTerms[index + 1];
+            return currSearchTerm;
+        }
+    }
+
+    function getAShirt() {
+        currSearchTerm = termCycle();
+        console.log("getAShirt term: ", currSearchTerm);
+        var currShirt = currSearchDict[currSearchTerm]['items'].pop();
+        currSearchDict[currSearchTerm]['countdown'] -= 1;
+        console.log("shirt countdown: ", currSearchDict[currSearchTerm]['countdown']);
+        // LATER: If shirt count is low, make AJAX request to get more from the Etsy API
+        return currShirt;
+    }
+
+    function displayNewShirt(shirt_object) {
+        var shirt_url = shirt_object['url'];
+        var shirt_price = shirt_object['price'];
+        var shirt_image_url = shirt_object['image_url'];
+        var user_search_term = shirt_object['user_search_term'];
+
+        $('#image').attr('src', shirt_image_url);
+        $('#price').html(shirt_price);
+        $('#link').attr('href', shirt_url);
+        $('#user_search_term').html(user_search_term);
+    }
+
+    $(document).ready(function() {
+        displayNewShirt(getAShirt());
+        });
+    $('#next').on('click', function(evt) {
+        displayNewShirt(getAShirt());
+    });
 
 </script>
 
