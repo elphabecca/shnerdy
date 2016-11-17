@@ -5,7 +5,7 @@
 <h3>Snearch Summary:</h3>
 
 {% for term in search_terms %}
-<li>{{ term }} ( {{ curr_search_dict[term]['count'] }} results)</li>
+<li>{{ term }} ( {{ curr_search_dict[term]['total_count'] }} results)</li>
 {% endfor %}
 
 <p>Total search results: {{ result_sum }}</p>
@@ -23,8 +23,6 @@
 
 </div><br><br>
 
-{{ curr_search_dict.keys() }}
-
 <script type="text/javascript">
 
     var currSearchDict = {{ curr_search_dict|tojson }};
@@ -33,7 +31,7 @@
     var nonZeroSearchTerms = [];
     function addSearchTerms(allSearchTerms) {
         for (var i = 0; i < allSearchTerms.length; i++) {
-            if (currSearchDict[allSearchTerms[i]]['count'] !== 0) {
+            if (currSearchDict[allSearchTerms[i]]['total_count'] !== 0) {
                 nonZeroSearchTerms.push(allSearchTerms[i]);
             }
         }
@@ -43,13 +41,13 @@
     var currSearchTerm;
     function termCycle() {
         // Cycle through the nonZeroSearchTerms to get the next currSearchTerm
-        if (currSearchTerm == undefined) {
+        if (currSearchTerm === undefined) {
             currSearchTerm = nonZeroSearchTerms[0];
             return currSearchTerm;
         }
         else {
             var index = nonZeroSearchTerms.indexOf(currSearchTerm);
-            if (index == nonZeroSearchTerms.length - 1) {
+            if (index === nonZeroSearchTerms.length - 1) {
                 index = -1;
             }
             currSearchTerm = nonZeroSearchTerms[index + 1];
@@ -57,13 +55,41 @@
         }
     }
 
+    function youGotShirts(results) {
+        var term = Object.keys(results);
+        currSearchDict[term]['API_requests'] = results[term]['API_requests'];
+        currSearchDict[term]['num_avail_shirts'] = results[term]['num_avail_shirts'];
+        for (var i = 0; i < results[term]['items'].length; i++) {
+            currSearchDict[term]['items'].push(results[term]['items'][i]);
+        }
+    }
+
     function getAShirt() {
         currSearchTerm = termCycle();
-        console.log("getAShirt term: ", currSearchTerm);
-        var currShirt = currSearchDict[currSearchTerm]['items'].pop();
-        currSearchDict[currSearchTerm]['countdown'] -= 1;
-        console.log("shirt countdown: ", currSearchDict[currSearchTerm]['countdown']);
-        // LATER: If shirt count is low, make AJAX request to get more from the Etsy API
+        var currTerm = currSearchDict[currSearchTerm]
+        var currShirt = currTerm['items'].pop();
+        currTerm['countdown'] -= 1;
+        currTerm['num_avail_shirts'] -= 1;
+        console.log("getAShirt: ", currSearchTerm, currTerm['num_avail_shirts'], currTerm['countdown'])
+        if (currTerm['countdown'] === 0) {
+            var index = nonZeroSearchTerms.indexOf(currSearchTerm);
+            alert("This is the last shirt related to your snearch for '" + currSearchTerm + "'!");
+            nonZeroSearchTerms.splice(index, 1);
+            currSearchTerm = undefined;
+        }
+        // If shirt count is low, make request to get more from the Etsy API
+        if (currTerm['num_avail_shirts'] === 3 &&
+            currTerm['API_requests']*10 < currTerm['total_count']) {
+            var shirtDetails = {
+                'total_count' : currTerm['total_count'],
+                'countdown' : currTerm['countdown'],
+                'num_avail_shirts' : currTerm['num_avail_shirts'],
+                'API_requests' : currTerm['API_requests'],
+                'term' : currShirt['user_search_term']
+            };
+
+            $.get("/request_more_shirts", shirtDetails, youGotShirts);
+        }
         return currShirt;
     }
 

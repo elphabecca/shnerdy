@@ -266,8 +266,10 @@ def get_etsy_count_and_few_results(search_term):
 def add_to_curr_search_dict(term, count, results, curr_search_dict):
     """Add search results to the current search dictionary."""
     
-    curr_search_dict[term] = {'count' : count,
+    curr_search_dict[term] = {'total_count' : count,
                               'countdown' : count,
+                              'num_avail_shirts' : len(results),
+                              'API_requests' : 1,
                               'items' : []}
 
     item_listings = curr_search_dict[term]['items']
@@ -305,14 +307,81 @@ def create_shnummary():
         if count == 0:
             flash("The search for '%s' didn't return any results." % term)
 
-    print "TOTAL RESULTS: ", result_sum
-
     return render_template('snearch_summary.html',
                            search_terms=search_terms,
                            session_user_id=session_user_id,
                            result_sum=result_sum,
                            curr_search_dict=curr_search_dict)
   
+
+def create_new_results_dict(term,
+                            total_count,
+                            countdown,
+                            num_avail_shirts,
+                            API_requests,
+                            results):
+    """create a dict to append to the curr_search_dict"""
+    new_results_dict = {}
+    new_results_dict[term] = {'total_count' : total_count,
+                              'countdown' : countdown,
+                              'num_avail_shirts' : num_avail_shirts,
+                              'API_requests' : API_requests,
+                              'items' : []}
+
+    item_listings = new_results_dict[term]['items']
+    
+    for listing in results:
+            temp_dict = {}
+            temp_dict["etsy_id"] = listing["listing_id"]
+            temp_dict["tags"] = listing["tags"]
+            temp_dict["image_url"] = listing["Images"][0]["url_170x135"]
+            temp_dict["price"] = listing["price"]
+            temp_dict["url"] = listing["url"]
+            temp_dict["user_search_term"] = term
+
+            item_listings.append(temp_dict)
+
+    return new_results_dict
+
+
+@app.route('/request_more_shirts')
+def request_more_shirts():
+    """Request more shirts from the Etsy API and return them"""
+    total_count = int(request.args.get('total_count'))
+    countdown = int(request.args.get('countdown'))
+    num_avail_shirts = int(request.args.get('num_avail_shirts'))
+    API_requests = int(request.args.get('API_requests'))
+    term = str(request.args.get('term'))
+
+    offset = API_requests * 10
+
+    # The details of the search
+    url = 'https://openapi.etsy.com/v2/listings/active?api_key=' + KEYSTRING
+    payload = {'tags' : term,
+               'includes': 'Images(url_170x135)',
+               'limit' : 10,
+               'category' : 'Clothing/Shirt',
+               'offset' : str(offset)}
+
+    
+    response = requests.get(url, params=payload)
+    json_response = response.json()
+    results = json_response["results"]
+
+    # Update shirt data:
+    num_avail_shirts += len(results)
+    API_requests += 1
+
+    new_results_dict = create_new_results_dict(term,
+                                               total_count,
+                                               countdown,
+                                               num_avail_shirts,
+                                               API_requests,
+                                               results)
+
+    # return new results to front end
+    return jsonify(new_results_dict)
+
 
 @app.route('/logout')
 def logout_user():
