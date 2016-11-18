@@ -161,7 +161,7 @@ class LoggedInPhoebe(unittest.TestCase):
         """Test the route that gets more shirts from the Etsy API when shirts are running low."""
 
         result = self.client.get('/request_more_shirts',
-                                      data={'total_count' : 30,
+                                      query_string={'total_count' : 30,
                                             'countdown' : 15,
                                             'num_avail_shirts' : 2,
                                             'API_requests' : 1,
