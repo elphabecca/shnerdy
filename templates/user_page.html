@@ -4,63 +4,69 @@
 
 <script type="text/javascript">$('#user_page_link').hide();</script>
 
-<h1>Search Shnerdy!</h1>
+<h1>Search Shnerdy!</h1><br>
 
-{% if categories == [] %}
-<div id="if_cat-empty">
-<p>Looks like you haven't created any searches yet. Add some below!</p>
+<div class="row">
+    <div class="col-xs-6"><h4>Search for shirts...</h4>
+        {% if categories == [] %}
+        <div id="if_cat-empty">
+        <p>Looks like you haven't created any searches yet. Add some below!</p>
+        </div>
+        {% endif %}
+
+        {% if categories != [] %}
+        <div id="snearch_form">
+            <form action="/listy" method="POST">
+                <select id="category_dropdown" name="categories">
+                    <option name="cat_drop_opt" value="cat_name">Please Select...</option>
+                </select>
+                    <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
+                    <input type="submit" name="search_shirts" value="Select Search Category">
+            </form><br><br>
+        </div>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+
+        function updateDropdown(results) {
+            $('#category_dropdown').empty();
+            var insertHtml = "";
+            var cat_list = results.cat_list;
+            for (i = 0; i < cat_list.length; i++) {
+                var list_item = "'" + cat_list[i] + "'";
+                insertHtml += '<option name="cat_drop_opt" value=' + list_item + '>' + cat_list[i] + '</option>'
+            };
+            $('#category_dropdown').append(insertHtml);
+        }
+
+        function updateDropdownRequest(evt) {
+            var userId = {'user_id' : $('#user_id_drop').val()};
+
+            $.post("/update_dropdown",
+                userId,
+                updateDropdown);
+
+            console.dir(evt)
+        }
+
+        $('#category_dropdown').on('click', updateDropdownRequest);
+
+    </script>
+
+    <div class="col-xs-6"><h4>...or add a new category to search!</h4>
+        <form action='/add_category' id="cat_add_form" method="POST">
+            Category Name: <input type="text" id="new_category_box" name="category">
+            <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
+            <input type="submit" id="category_add" value="Add Category">
+        </form><br><br>
+    </div>
 </div>
-{% endif %}
-
-{% if categories != [] %}
-<div id="snearch_form">
-<form action="/listy" method="POST">
-    <select id="category_dropdown" name="categories">
-        <option name="cat_drop_opt" value="cat_name">Please Select...</option>
-    </select>
-        <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
-        <input type="submit" name="search_shirts" value="Select Search Category">
-</form><br><br>
-</div>
-{% endif %}
-
-<script type="text/javascript">
-
-    function updateDropdown(results) {
-        $('#category_dropdown').empty();
-        var insertHtml = "";
-        var cat_list = results.cat_list;
-        for (i = 0; i < cat_list.length; i++) {
-            var list_item = "'" + cat_list[i] + "'";
-            insertHtml += '<option name="cat_drop_opt" value=' + list_item + '>' + cat_list[i] + '</option>'
-        };
-        $('#category_dropdown').append(insertHtml);
-    }
-
-    function updateDropdownRequest(evt) {
-        var userId = {'user_id' : $('#user_id_drop').val()};
-
-        $.post("/update_dropdown",
-            userId,
-            updateDropdown);
-
-        console.dir(evt)
-    }
-
-    $('#category_dropdown').on('click', updateDropdownRequest);
-
-</script>
-
-<form action='/add_category' id="cat_add_form" method="POST">
-    Category Name: <input type="text" id="new_category_box" name="category">
-    <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
-    <input type="submit" id="category_add" value="Add Category">
-</form><br><br>
 
 <div id="term_div">Your Categories:
         {% for category in categories %}
             <form class="term_add_form" method="POST">
-            <label class="category_name">{{ category.term }}</label><br>
+            <br><label class="category_name">{{ category.term }}</label><br>
                 
                     <input type="text" class="new_term_box" name="new_term_box">
                     <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
@@ -83,7 +89,7 @@
     // *************** LOGIC FOR CATEGORIES ***************
     function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        var html = '<form class="term_add_form" method="POST"><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add Search Term</button></form><div id="cat_term' + categoryId + '"></div>';
+        var html = '<form class="term_add_form" method="POST"><br><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add Search Term</button></form><div id="cat_term' + categoryId + '"></div>';
         return html;
     }
 
