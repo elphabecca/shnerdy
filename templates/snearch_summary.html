@@ -5,7 +5,7 @@
 <h3>Snearch Summary:</h3>
 
 {% for term in search_terms %}
-<li>{{ term }} ( {{ curr_search_dict[term]['total_count'] }} results)</li>
+<li>{{ term }} ({{ curr_search_dict[term]['total_count'] }} results)</li>
 {% endfor %}
 
 <p>Total search results: {{ result_sum }}</p>
@@ -170,7 +170,4 @@
     });
 
 </script>
-
-Current Search Terms: {% for term in session['curr_search'].keys() %}
-<li>Term: {{ term }}, Countdown: {{ session['curr_search'][term]['countdown'] }}</li>
-{% endfor %} -->
+ -->

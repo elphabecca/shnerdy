@@ -56,11 +56,38 @@ class Term(db.Model):
         return "<id=%s term=%s parent_id=%s user_id=%s>" % (
                 self.id, self.term, self.parent_id, self.user_id)
 
+def example_data():
+    """Create example data for testing purposes"""
 
-def connect_to_db(app):
+    phoebe = User(first_name='Phoebe', email='phoebe@gmail.com', username='smellycat', password='smellycat')
+    monica = User(first_name='Monica', email='monica@gmail.com', username='puffyhair', password='puffyhair')
+    rachel = User(first_name='Rachel', email='rachel@gmail.com', username='igotofftheplane', password='igotofftheplane')
+    joey = User(first_name='Joey', email='joey@gmail.com', username='hey', password='hey')
+    chandler = User(first_name='Chandler', email='chandler@gmail.com', username='thanksgiving', password='thanksgiving')
+    ross = User(first_name='Ross', email='ross@gmail.com', username='iloverachel', password='iloverachel')
+
+
+    star_trek = Term(term='Star Trek', user=ross)
+    shut_up_wesley = Term(term="Shut Up Wesley", parent_id=star_trek.id, user=ross)
+    make_it_so = Term(term="Make it so", parent_id=star_trek.id, user=ross)
+    smellycats = Term(term='Smelly Cat', user=phoebe)
+    grumpycat = Term(term="Grumpy Cat", parent_id=smellycats.id, user=phoebe)
+    music = Term(term="Music", user=phoebe)
+    guitar = Term(term="Guitar", parent_id=music.id, user=phoebe)
+    bagpipes = Term(term="Bagpipes", parent_id=music.id, user=phoebe)
+    singing = Term(term="Singing", parent_id=music.id, user=phoebe)
+
+
+    db.session.add_all([phoebe, monica, rachel, joey, chandler, ross, star_trek,
+                        shut_up_wesley, make_it_so, smellycats, grumpycat, music,
+                        guitar, bagpipes, singing])
+    db.session.commit()
+
+
+def connect_to_db(app, uri='postgresql:///shnerdy'):
     """Connect to db"""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///shnerdy'
+    app.config['SQLALCHEMY_DATABASE_URI'] = uri
     # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
@@ -70,7 +97,6 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "This is in the model file -- you're in the DB"
-
 
 
 # For when you forget later but you had to dump and re-do your db:

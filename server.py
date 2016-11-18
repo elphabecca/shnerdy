@@ -131,23 +131,6 @@ def yay():
     return redirect('/%s' % user.id)
 
 
-@app.route('/display_results', methods=['POST'])
-def show_results():
-    """Display all the shirt results (Title, price, image(s), url) to the User"""
-
-    session_user_id = session.get('user')
-
-    search_terms = request.form.getlist('search_term')
-    result_list = get_many_results(search_terms)
-    num_items = len(result_list)
-    # result_list = json_response["results"]
-
-    return render_template("display_results.html",
-                           result_list=result_list,
-                           num_items=num_items,
-                           session_user_id=session_user_id)
-
-
 @app.route('/<int:user_id>')
 def show_user_terms(user_id):
     """Show the user their categories and terms, allow them to add new terms and edit fields."""
@@ -347,6 +330,7 @@ def create_new_results_dict(term,
 @app.route('/request_more_shirts')
 def request_more_shirts():
     """Request more shirts from the Etsy API and return them"""
+    
     total_count = int(request.args.get('total_count'))
     countdown = int(request.args.get('countdown'))
     num_avail_shirts = int(request.args.get('num_avail_shirts'))
@@ -400,7 +384,7 @@ if __name__ == "__main__":
 
     connect_to_db(app)
     app.debug = True
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
     app.run(debug=True)
     
 
@@ -448,6 +432,22 @@ if __name__ == "__main__":
 #         offset += 100
 
 #     return json_response
+
+# @app.route('/display_results', methods=['POST'])
+# def show_results():
+#     """Display all the shirt results (Title, price, image(s), url) to the User"""
+
+#     session_user_id = session.get('user')
+
+#     search_terms = request.form.getlist('search_term')
+#     result_list = get_many_results(search_terms)
+#     num_items = len(result_list)
+#     # result_list = json_response["results"]
+
+#     return render_template("display_results.html",
+#                            result_list=result_list,
+#                            num_items=num_items,
+#                            session_user_id=session_user_id)
 
 # ********** STORING SHIRT DATA IN SESSIONS **********
 # @app.route('/snearch_summary', methods=['POST'])
@@ -609,4 +609,5 @@ if __name__ == "__main__":
 #         flash("Whaddup, new user!")
 
 #         return redirect('/')
+
 
