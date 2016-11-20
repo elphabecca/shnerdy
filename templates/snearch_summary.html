@@ -65,12 +65,22 @@
     }
 
     function getAShirt() {
+        
+        // Last Shirt Logic
+        if (nonZeroSearchTerms.length === 0) {
+            alert("No more shirts!  Please go back to your categories and Snearch again.");
+            return false;
+        }
+
+        // Standard Shirt Logic - get a new search term and grab a related shirt.
         currSearchTerm = termCycle();
         var currTerm = currSearchDict[currSearchTerm]
         var currShirt = currTerm['items'].pop();
         currTerm['countdown'] -= 1;
         currTerm['num_avail_shirts'] -= 1;
         console.log("getAShirt: ", currSearchTerm, currTerm['num_avail_shirts'], currTerm['countdown'])
+        
+        // Removing and empty search term from the list of option
         if (currTerm['countdown'] === 0) {
             var index = nonZeroSearchTerms.indexOf(currSearchTerm);
             alert("This is the last shirt related to your snearch for '" + currSearchTerm + "'!");

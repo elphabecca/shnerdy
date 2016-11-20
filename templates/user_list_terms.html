@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <h2>Select the terms you'd like to search for:</h2>
 
 <form action="/snearch_summary" method="POST">
@@ -10,8 +12,33 @@
     <input type="checkbox" name="search_term" value="{{ term }}" checked="checked">{{ term }}<br>
     {% endfor %}<br>
 
-    <input type="submit" id="search_terms" name="search_terms" value="SHNEARCH!">
+    <button type="submit" id="search_terms" name="search_terms" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">SNEARCH!</button>
 
 </form>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Snearching...</h4>
+      </div>
+      <div class="modal-body">
+        <img src="http://66.media.tumblr.com/3c300b438575aef1bef76ca962aba3ae/tumblr_n5stgrcGIB1qzs2sko1_500.gif">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+    function launchModal(evt) {
+        $('#myModal').modal("show");
+    }
+
+    $('#search_terms').on('click', launchModal);
+</script>
 
 {% endblock %}
