@@ -234,7 +234,7 @@ def get_etsy_count_and_few_results(search_term):
     # The details of the search
     url = 'https://openapi.etsy.com/v2/listings/active?api_key=' + KEYSTRING
     payload = {'tags' : search_term,
-               'includes': 'Images(url_170x135)',
+               'includes': 'Images(url_fullxfull)',
                'limit' : 10,
                'category' : 'Clothing/Shirt'}
 
@@ -261,7 +261,7 @@ def add_to_curr_search_dict(term, count, results, curr_search_dict):
             temp_dict = {}
             temp_dict["etsy_id"] = listing["listing_id"]
             temp_dict["tags"] = listing["tags"]
-            temp_dict["image_url"] = listing["Images"][0]["url_170x135"]
+            temp_dict["image_url"] = listing["Images"][0]["url_fullxfull"]
             temp_dict["price"] = listing["price"]
             temp_dict["url"] = listing["url"]
             temp_dict["user_search_term"] = term
@@ -317,7 +317,7 @@ def create_new_results_dict(term,
             temp_dict = {}
             temp_dict["etsy_id"] = listing["listing_id"]
             temp_dict["tags"] = listing["tags"]
-            temp_dict["image_url"] = listing["Images"][0]["url_170x135"]
+            temp_dict["image_url"] = listing["Images"][0]["url_fullxfull"]
             temp_dict["price"] = listing["price"]
             temp_dict["url"] = listing["url"]
             temp_dict["user_search_term"] = term
@@ -342,7 +342,7 @@ def request_more_shirts():
     # The details of the search
     url = 'https://openapi.etsy.com/v2/listings/active?api_key=' + KEYSTRING
     payload = {'tags' : term,
-               'includes': 'Images(url_170x135)',
+               'includes': 'Images(url_fullxfull)',
                'limit' : 10,
                'category' : 'Clothing/Shirt',
                'offset' : str(offset)}
