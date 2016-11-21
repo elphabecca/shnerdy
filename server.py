@@ -3,6 +3,7 @@ from flask_oauth import OAuth
 import requests
 import os
 import pdb
+import json
 from model import User, Term, connect_to_db, db
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -365,6 +366,28 @@ def request_more_shirts():
 
     # return new results to front end
     return jsonify(new_results_dict)
+
+
+@app.route('/check_dupes')
+def check_dupes():
+    """Check for duplicates in shirt data"""
+
+    etsy_id = str(request.args.get('etsy_id'))
+    term = str(request.args.get('term'))
+    dupe_dict = json.loads(request.args.get("dict_pass"))
+
+    if etsy_id not in dupe_dict.keys():
+        dupe_dict[etsy_id] = dupe_dict.get(etsy_id, {'count' : 0, 'term' : []})
+
+    dupe_dict[etsy_id]['count'] += 1
+    dupe_dict[etsy_id]['term'].append(term)
+
+    if dupe_dict[etsy_id]['count'] > 1:
+        return_dict = {'dupe' : "True", "dupeDict" : dupe_dict, "dupe_results" : dupe_dict[etsy_id]}
+        return jsonify(return_dict)
+    else:
+        return_dict = {'dupe' : "False", "dupeDict" : dupe_dict}
+        return jsonify(return_dict)
 
 
 @app.route('/logout')

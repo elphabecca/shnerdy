@@ -16,6 +16,7 @@
 
 <p>You found this shirt by searching: 
     '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
+        <div id="duplicate" class="boxed" hidden>Duplicate notice</div>
         <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
         <li id="price">PRICE</li>
         <li><a id="link" href="http://http://www.kittenwar.com/" target="_blank">Shirt Link</a></li>
@@ -27,6 +28,7 @@
 
     var currSearchDict = {{ curr_search_dict|tojson }};
     var allSearchTerms = Object.keys(currSearchDict);
+    var dupeDict = {}
 
     var nonZeroSearchTerms = [];
     function addSearchTerms(allSearchTerms) {
@@ -64,6 +66,18 @@
         }
     }
 
+    function is_duplicate(results) {
+        if (results['dupe'] === "False") {
+            dupeDict = results["dupeDict"]
+            console.log(dupeDict)
+            return
+        }
+        dupeDict = results["dupeDict"]
+        console.log(dupeDict)
+        $('#duplicate').show();
+        $('#duplicate').html("This shirt is a duplicate. It came up in the searches for: " + results["dupe_results"].term + ".");
+    }
+
     function getAShirt() {
         
         // Last Shirt Logic
@@ -73,12 +87,17 @@
         }
 
         // Standard Shirt Logic - get a new search term and grab a related shirt.
+        $('#duplicate').hide();
         currSearchTerm = termCycle();
         var currTerm = currSearchDict[currSearchTerm]
         var currShirt = currTerm['items'].pop();
         currTerm['countdown'] -= 1;
         currTerm['num_avail_shirts'] -= 1;
         console.log("getAShirt: ", currSearchTerm, currTerm['num_avail_shirts'], currTerm['countdown'])
+        dupe_details = {etsy_id : currShirt['etsy_id'],
+                        term : currShirt['user_search_term'],
+                        dict_pass : JSON.stringify(dupeDict)};
+        $.get('/check_dupes', dupe_details, is_duplicate)
         
         // Removing and empty search term from the list of option
         if (currTerm['countdown'] === 0) {
