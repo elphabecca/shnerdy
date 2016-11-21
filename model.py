@@ -33,6 +33,7 @@ class User(db.Model):
 
     # Relationships
     terms = db.relationship('Term', backref='user')
+    ratings = db.relationship('Rating', backref='user')
 
 
 class Term(db.Model):
@@ -59,7 +60,7 @@ class Term(db.Model):
 
 
 class Rating(db.Model):
-    """Class for Yes or No ratings that the user gives to a shirt."""
+    """Class for yay or nay ratings that the user gives to a shirt."""
 
     __tablename__ = 'ratings'
 
@@ -67,14 +68,9 @@ class Rating(db.Model):
                    primary_key=True,
                    autoincrement=True)
     etsy_id = db.Column(db.String(25),
-                         nullable=False)
-    shirt_price = db.Column(db.Float(2),
-                         nullable=False)
-    shirt_img = db.Column(db.String(150),
-                         nullable=False)
-    shirt_url = db.Column(db.String(150),
-                         nullable=False)
-    rating = db.Column(db.Integer,
+                         nullable=False,
+                         unique=True)
+    rating = db.Column(db.Boolean,
                        nullable=False)
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.id'),
@@ -87,7 +83,29 @@ class Rating(db.Model):
                 self.id, self.etsy_id, self.rating, self.user_id)
 
     # Relationships
-    terms = db.relationship('User', backref='rating')
+    shirts = db.relationship('Shirt', backref='rating')
+
+class Shirt(db.Model):
+    """Class to hold shirt data"""
+
+    __tablename__ = 'shirts'
+
+    id = db.Column(db.String(25),
+                   db.ForeignKey('ratings.etsy_id'),
+                   primary_key=True,
+                   nullable=False)
+    price = db.Column(db.String(10),
+                         nullable=False)
+    img = db.Column(db.String(150),
+                         nullable=False)
+    url = db.Column(db.String(150),
+                         nullable=False)
+
+    def __repr__(self):
+        """Show info about the shirt."""
+
+        return "<id=%s price=%s img=%s url=%s>" % (
+                self.id, self.price, self.img, self.url)
 
 
 # EXAMPLE DATA FOR TESTING:
