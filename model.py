@@ -66,7 +66,13 @@ class Rating(db.Model):
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
-    shirt_id = db.Column(db.String(25),
+    etsy_id = db.Column(db.String(25),
+                         nullable=False)
+    shirt_price = db.Column(db.Float(2),
+                         nullable=False)
+    shirt_img = db.Column(db.String(150),
+                         nullable=False)
+    shirt_url = db.Column(db.String(150),
                          nullable=False)
     rating = db.Column(db.Integer,
                        nullable=False)
@@ -77,8 +83,8 @@ class Rating(db.Model):
     def __repr__(self):
         """Show info about the rating."""
 
-        return "<id=%s shirt_id=%s rating=%s user_id=%s>" % (
-                self.id, self.shirt_id, self.rating, self.user_id)
+        return "<id=%s etsy_id=%s rating=%s user_id=%s>" % (
+                self.id, self.etsy_id, self.rating, self.user_id)
 
     # Relationships
     terms = db.relationship('User', backref='rating')
