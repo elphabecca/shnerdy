@@ -34,6 +34,7 @@ class User(db.Model):
     # Relationships
     terms = db.relationship('Term', backref='user')
 
+
 class Term(db.Model):
     """Class for user-created categories and terms of Shnerdy searches."""
 
@@ -56,6 +57,34 @@ class Term(db.Model):
         return "<id=%s term=%s parent_id=%s user_id=%s>" % (
                 self.id, self.term, self.parent_id, self.user_id)
 
+
+class Rating(db.Model):
+    """Class for Yes or No ratings that the user gives to a shirt."""
+
+    __tablename__ = 'ratings'
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    shirt_id = db.Column(db.String(25),
+                         nullable=False)
+    rating = db.Column(db.Integer,
+                       nullable=False)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.id'),
+                        nullable=False)
+
+    def __repr__(self):
+        """Show info about the rating."""
+
+        return "<id=%s shirt_id=%s rating=%s user_id=%s>" % (
+                self.id, self.shirt_id, self.rating, self.user_id)
+
+    # Relationships
+    terms = db.relationship('User', backref='rating')
+
+
+# EXAMPLE DATA FOR TESTING:
 def example_data():
     """Create example data for testing purposes"""
 
