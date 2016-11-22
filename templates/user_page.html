@@ -8,23 +8,35 @@
 
 <div class="row">
     <div class="col-xs-6"><h4>Search for shirts...</h4>
+        
         {% if categories == [] %}
-        <div id="if_cat-empty">
-        <p>Looks like you haven't created any searches yet. Add some below!</p>
-        </div>
+            <div id="if_cat-empty">
+                <p>Looks like you haven't created any searches yet. Add some here!</p>
+            </div>
+
+            <div id="snearch_div_hide" hidden>
+                <form action="/listy" id="snearch_form" method="POST">
+                    <select id="category_dropdown" name="categories">
+                        <option name="cat_drop_opt" value="cat_name">Please Select...</option>
+                    </select>
+                        <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
+                        <input type="submit" id="snearch_submit" name="search_shirts" value="Select Search Category">
+                </form><br><br>
+            </div>
         {% endif %}
 
         {% if categories != [] %}
-        <div id="snearch_div">
-            <form action="/listy" id="snearch_form" method="POST">
-                <select id="category_dropdown" name="categories">
-                    <option name="cat_drop_opt" value="cat_name">Please Select...</option>
-                </select>
-                    <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
-                    <input type="submit" id="snearch_submit" name="search_shirts" value="Select Search Category">
-            </form><br><br>
-        </div>
-        {% endif %}
+            <div id="snearch_div">
+                <form action="/listy" id="snearch_form" method="POST">
+                    <select id="category_dropdown" name="categories">
+                        <option name="cat_drop_opt" value="cat_name">Please Select...</option>
+                    </select>
+                        <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
+                        <input type="submit" id="snearch_submit" name="search_shirts" value="Select Search Category">
+                </form><br><br>
+            </div>
+        {% endif %}  
+        
     </div>
 
     <script type="text/javascript">
@@ -63,7 +75,8 @@
     </div>
 </div>
 
-<div id="term_div">Your Categories:
+<h2>Your Categories: </h2>
+<div id="term_div">
         {% for category in categories %}
             <form class="term_add_form" method="POST">
             <br><label class="category_name">{{ category.term }}</label><br>
@@ -102,9 +115,12 @@
         var someHtml = makeCategoryInputElement(results.category_name,
                                                 results.user_id,
                                                 results.category_id);
-        $('#term_div').append(someHtml);
-        $('#if_cat-empty').hide()
-        $('#snearch_div').show()
+        $('#term_div').prepend(someHtml);
+
+        if ($('#if_cat-empty')) {
+            $('#if_cat-empty').hide()
+            $('#snearch_div_hidden').show()
+        }
         $('#' + results.category_id).on('click', submitTerm);
     }
     

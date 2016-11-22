@@ -445,7 +445,8 @@ def display_favorites():
 
     return render_template('favorite_shirts.html',
                             shirts=shirts,
-                            num_shirts=num_shirts)
+                            num_shirts=num_shirts,
+                            session_user_id=session_user_id)
 
 @app.route('/logout')
 def logout_user():
