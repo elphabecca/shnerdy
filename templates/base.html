@@ -8,7 +8,7 @@
 
 <body>
 
-    <!-- LOGOUT OPTION DISPLAYED: ? -->
+    <!-- LOGOUT AND LINK OPTION DISPLAYED: ? -->
     {% if session['access_token'] %}
         <a href="/logout">Logout</a>
     {% endif %}
@@ -16,6 +16,12 @@
     {% if session['user'] %}
         <div id="user_page_link">
             <a href="/{{ session_user_id }}">Your Categories</a>
+        </div>
+    {% endif %}
+
+    {% if session['user'] %}
+        <div id="favorites_link">
+            <a href="/favorites">Your Favorites</a>
         </div>
     {% endif %}
     <hr>

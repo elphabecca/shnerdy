@@ -34,6 +34,7 @@ class User(db.Model):
     # Relationships
     terms = db.relationship('Term', backref='user')
     ratings = db.relationship('Rating', backref='user')
+    shirts = db.relationship('Shirt', backref='user')
 
 
 class Term(db.Model):
@@ -100,6 +101,9 @@ class Shirt(db.Model):
                          nullable=False)
     url = db.Column(db.String(150),
                          nullable=False)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.id'),
+                        nullable=False)
 
     def __repr__(self):
         """Show info about the shirt."""

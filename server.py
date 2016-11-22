@@ -37,7 +37,7 @@ google = oauth.remote_app('google',
 # HOME PAGE
 @app.route('/')
 def index():
-    """Shnerdy introduction (need), login/OAuth form (need), logout button if user not in session (need)"""
+    """Shnerdy introduction, login/OAuth form, logout button if user not in session"""
 
     access_token = session.get('access_token')
     session_user_id = session.get('user')
@@ -394,7 +394,8 @@ def check_dupes():
 def add_shirt_to_db_yay():
     """Add shirt to the db"""
 
-    session_user_id = session.get('user')
+    user_id = session.get('user')
+    print "SERIOUSLY", user_id, type(user_id)
     shirt_img = str(request.form.get('img'))
     shirt_price = str(request.form.get('price'))
     shirt_url = str(request.form.get('url'))
@@ -402,13 +403,14 @@ def add_shirt_to_db_yay():
 
     new_rating = Rating(etsy_id=etsy_id,
                         rating=True,
-                        user_id=session_user_id)
+                        user_id=user_id)
     db.session.add(new_rating)
 
     new_shirt = Shirt(id=etsy_id,
                       price=shirt_price,
                       img=shirt_img,
-                      url=shirt_url)
+                      url=shirt_url,
+                      user_id=user_id)
     db.session.add(new_shirt)
 
     db.session.commit()
@@ -430,6 +432,20 @@ def add_shirt_to_db_nay():
     db.session.commit()
 
     return "SUCCESS"
+
+@app.route('/favorites')
+def display_favorites():
+    """Display the shirts the user has indicated they like."""
+
+    session_user_id = session.get('user')
+
+    shirts = Shirt.query.filter(Shirt.user_id == session_user_id).all()
+
+    num_shirts = len(shirts)
+
+    return render_template('favorite_shirts.html',
+                            shirts=shirts,
+                            num_shirts=num_shirts)
 
 @app.route('/logout')
 def logout_user():

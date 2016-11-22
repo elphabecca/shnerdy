@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>Your favorites: </h3>
+
+<script type="text/javascript">
+    
+    $('#favorites_link').hide()
+
+</script>
+
+<ul>
+{% for shirt in shirts %}
+
+    <img src={{ shirt["img"] }}>
+    <li>Price: {{ shirt["price"] }}</li>
+    <li><a href={{ shirt["url"] }}>Shirt Link</a></li>
+    <br><br>
+
+{% endfor %}
+</ul>
+
+{% endblock %}
