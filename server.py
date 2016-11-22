@@ -4,7 +4,7 @@ import requests
 import os
 import pdb
 import json
-from model import User, Term, connect_to_db, db
+from model import User, Term, Rating, Shirt, connect_to_db, db
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -389,6 +389,47 @@ def check_dupes():
         return_dict = {'dupe' : "False", "dupeDict" : dupe_dict}
         return jsonify(return_dict)
 
+
+@app.route('/yay_shirt', methods=['POST'])
+def add_shirt_to_db_yay():
+    """Add shirt to the db"""
+
+    session_user_id = session.get('user')
+    shirt_img = str(request.form.get('img'))
+    shirt_price = str(request.form.get('price'))
+    shirt_url = str(request.form.get('url'))
+    etsy_id = str(request.form.get('etsy_id'))
+
+    new_rating = Rating(etsy_id=etsy_id,
+                        rating=True,
+                        user_id=session_user_id)
+    db.session.add(new_rating)
+
+    new_shirt = Shirt(id=etsy_id,
+                      price=shirt_price,
+                      img=shirt_img,
+                      url=shirt_url)
+    db.session.add(new_shirt)
+
+    db.session.commit()
+
+    return "SUCCESS"
+
+@app.route('/nay_shirt', methods=['POST'])
+def add_shirt_to_db_nay():
+    """Add shirt to the db"""
+
+    session_user_id = session.get('user')
+    etsy_id = str(request.form.get('etsy_id'))
+
+    new_rating = Rating(etsy_id=etsy_id,
+                        rating=False,
+                        user_id=session_user_id)
+    
+    db.session.add(new_rating)
+    db.session.commit()
+
+    return "SUCCESS"
 
 @app.route('/logout')
 def logout_user():

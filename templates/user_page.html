@@ -15,13 +15,13 @@
         {% endif %}
 
         {% if categories != [] %}
-        <div id="snearch_form">
-            <form action="/listy" method="POST">
+        <div id="snearch_div">
+            <form action="/listy" id="snearch_form" method="POST">
                 <select id="category_dropdown" name="categories">
                     <option name="cat_drop_opt" value="cat_name">Please Select...</option>
                 </select>
                     <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
-                    <input type="submit" name="search_shirts" value="Select Search Category">
+                    <input type="submit" id="snearch_submit" name="search_shirts" value="Select Search Category">
             </form><br><br>
         </div>
         {% endif %}
@@ -104,7 +104,7 @@
                                                 results.category_id);
         $('#term_div').append(someHtml);
         $('#if_cat-empty').hide()
-        $('#snearch_form').show()
+        $('#snearch_div').show()
         $('#' + results.category_id).on('click', submitTerm);
     }
     

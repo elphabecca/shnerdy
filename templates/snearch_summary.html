@@ -20,7 +20,10 @@
         <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
         <li id="price">PRICE</li>
         <li><a id="link" href="http://http://www.kittenwar.com/" target="_blank">Shirt Link</a></li>
-        <input type="button" id="next" value="Next Shirt, Please!"></button>
+        <li id="etsy_id" hidden>Etsy ID Placeholder</li>
+        <input type="button" id="yay_shirt" value="I love this shirt!"></button>
+        <input type="button" id="next" value="This shirt is Meh."></button>
+        <input type="button" id="nay_shirt" value="I don't like this shirt."></button>
 
 </div><br><br>
 
@@ -127,11 +130,13 @@
         var shirt_price = shirt_object['price'];
         var shirt_image_url = shirt_object['image_url'];
         var user_search_term = shirt_object['user_search_term'];
+        var etsy_id = shirt_object['etsy_id']
 
         $('#image').attr('src', shirt_image_url);
         $('#price').html(shirt_price);
         $('#link').attr('href', shirt_url);
         $('#user_search_term').html(user_search_term);
+        $('#etsy_id').html(etsy_id);
     }
 
     $(document).ready(function() {
@@ -140,6 +145,46 @@
     $('#next').on('click', function(evt) {
         displayNewShirt(getAShirt());
     });
+
+    function shirtAdded() {
+        console.log("Shirt details saved to Shnerdbase.")
+    }
+
+    function yayShirt(evt) {
+        var thingTheyClickedOn = $(evt.currentTarget);
+        var listOfInputs = thingTheyClickedOn.siblings();
+        var img = listOfInputs[2]['currentSrc'];
+        var price = listOfInputs[3]['innerHTML'];
+        var url = listOfInputs[4].children[0].href;
+        var etsy_id = listOfInputs[5]['innerHTML'];
+
+        shirtData = {
+            'img' : img,
+            'price' : price,
+            'url' : url,
+            'etsy_id' : etsy_id}
+
+        $.post('/yay_shirt', shirtData, shirtAdded);
+
+        displayNewShirt(getAShirt());
+        console.dir(evt);
+    }
+
+    function nayShirt(evt) {
+        var thingTheyClickedOn = $(evt.currentTarget);
+        var listOfInputs = thingTheyClickedOn.siblings();
+        var etsy_id = listOfInputs[5]['innerHTML'];
+
+        shirtData = {'etsy_id' : etsy_id};
+
+        $.post('nay_shirt', shirtData, shirtAdded);
+
+        displayNewShirt(getAShirt());
+        console.dir(evt);
+    }
+
+    $('#yay_shirt').on('click', yayShirt);
+    $('#nay_shirt').on('click', nayShirt);
 
 </script>
 
