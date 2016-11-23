@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Tab Icon -->
     <link rel="icon" href="./static/shnerdy.png">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Chewy|Delius+Unicase" rel="stylesheet">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="/static/shnerdy.css">
 </head>
@@ -25,14 +27,14 @@
         <span class="icon-bar"></span>
       </button>
         <a class="navbar-brand" href="/">
-            <img alt="Brand" src="./static/shnerdy.png" style="height: 30px;">
+            <img alt="Brand" src="./static/shnerdy.png" style="height: 40px; margin-top: -10px; margin-right: -15px">
         </a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/">Shnerdy<span class="sr-only">(current)</span></a></li>
+        <li><a href="/">Shnerdy</a></li>
         {% if session['user'] %}
         <li id="user_page_link"><a href="/{{ session_user_id }}">Your Categories</a></li>
         <li id="favorites_link"><a href="/favorites">Your Favorites</a></li>
