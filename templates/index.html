@@ -2,23 +2,28 @@
 
 {% block content %}
 
-<h1>SHNERDY</h1>
+<div id=index-page class="container-fluid">
+    <div class="row row-centered">
+        <div class="col-xs-6 col-centered">
+            <div id="title-box">
 
-<h3>Shop nerdy, shop efficient.</h3>
+            <h1 id="sherdy-main">SHNERDY</h1>
 
-<ul>
-    <li>Step 1: Create a category and add search terms.</li>
-    <li>Step 2: Search shirts!</li>
-    <li>Step 3: Try not to buy all the shirts...</li>
-</ul>
+            <h3>Shop shirts. Shop nerdy. Shop efficient.</h3>
 
-{% if access_token == None %}
+            {% if access_token == None %}
 
-    <form action="/oauth" method="POST">
-       <input type="submit" id="oauth" name="oauth" value="Login with Google"> 
-    </form>
+                <br>
+                <form action="/oauth" method="POST">
+                   <button class="btn btn-block btn-social btn-google" type="submit" id="oauth" name="oauth">Login with Google</button>
+                </form>
 
-{% endif %}
+            {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
