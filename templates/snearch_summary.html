@@ -2,30 +2,37 @@
 
 {% block content %}
 
-<h3>Snearch Summary:</h3>
+<div class="container-fluid">
+<div class="row row-centered">
 
-{% for term in search_terms %}
-<li>{{ term }} ({{ curr_search_dict[term]['total_count'] }} results)</li>
-{% endfor %}
+            <div id="shnummary_div" class="col-xs-3 col-centered">
+                <h3>Snearch Summary:</h3>
 
-<p>Total search results: {{ result_sum }}</p>
+                {% for term in search_terms %}
+                <li>{{ term }} ({{ curr_search_dict[term]['total_count'] }} results)</li>
+                {% endfor %}
 
-<h3>Snearch Results:</h3>
+                <p>Total search results: {{ result_sum }}</p>
+            </div>
 
-<div id=snearch_results_div>
+            <div id='snearch_results_div' class="col-xs-7 col-centered">
+                <h3>Snearch Results:</h3>
 
-<p>You found this shirt by searching: 
-    '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
-        <div id="duplicate" class="boxed" hidden>Duplicate notice</div>
-        <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
-        <li id="price">PRICE</li>
-        <li><a id="link" href="http://http://www.kittenwar.com/" target="_blank">Shirt Link</a></li>
-        <li id="etsy_id" hidden>Etsy ID Placeholder</li>
-        <input type="button" id="yay_shirt" value="I love this shirt!"></button>
-        <input type="button" id="next" value="This shirt is Meh."></button>
-        <input type="button" id="nay_shirt" value="I don't like this shirt."></button>
+                <p>You found this shirt by searching: 
+                    '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
+                        <div id="duplicate" class="boxed" hidden>Duplicate notice</div>
+                        <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
+                        <li id="price">PRICE</li>
+                        <li><a id="link" href="http://http://www.kittenwar.com/" target="_blank">Shirt Link</a></li>
+                        <li id="etsy_id" hidden>Etsy ID Placeholder</li>
+                        <input type="button" id="yay_shirt" value="I love this shirt!"></button>
+                        <input type="button" id="next" value="This shirt is Meh."></button>
+                        <input type="button" id="nay_shirt" value="I don't like this shirt."></button>
 
-</div><br><br>
+            </div><br><br>
+
+</div>
+</div>
 
 <script type="text/javascript">
 

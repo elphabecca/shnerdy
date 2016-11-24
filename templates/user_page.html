@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
 <script type="text/javascript">$('#user_page_link').hide();</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -10,7 +11,7 @@
 <div id="user-page" class="container-fluid">
 <div class="row row-centered">
     <div id="search-shnerdy" class="col-xs-3 col-centered">
-        <h4>Search:</h4>
+        <br><h4>Search:</h4>
             
             {% if categories == [] %}
                 <div id="if_cat-empty">
@@ -58,7 +59,7 @@
 
             </script>
 
-        <hr><h4>Add category:</h4>
+        <hr><br><h4>Add category:</h4>
             <form action='/add_category' id="cat_add_form" method="POST">
                 <input type="text" id="new_category_box" name="category">
                 <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
@@ -67,21 +68,21 @@
     </div>
 
     <div id="your-cat" class="col-xs-8 col-centered">
-        <h4>Your Categories: </h4>
+        <div id="cat-title"><h4>Your Categories: </h4></div>
 
         
         <div class="row" id="term_div">
         {% for category in categories %}
             <div class="col-xs-6 col-md-3">
                 <a href="#" class="thumbnail">
-                <label class="category_name">{{ category.term }}</label><br>
-                    <div id="cat_term{{ category.id }}">
+                <label class="category_name"><i class="ionicons ion-tshirt"></i>&nbsp;{{ category.term }}</label><br>
+                    <ul class='list-unstyled'><div id="cat_term{{ category.id }}">
                         {% for term in terms %}
                             {% if term.parent_id == category.id %}
                                 <li>{{ term.term }}</li>
                             {% endif %}
                         {% endfor %}
-                    </div>
+                    </div></ul>
                 <form class="term_add_form" method="POST">
                     <input type="text" class="new_term_box" name="new_term_box">
                     <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
@@ -102,7 +103,7 @@
     // *************** LOGIC FOR CATEGORIES ***************
     function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        var html = "<div class='col-xs-6 col-md-3'><a href='#' class='thumbnail'><br><label class='category_name'>" + categoryName + "</label><br><div id='cat_term" + categoryId + "' style='display: inline-block;'></div><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></a></div>";
+        var html = "<div class='col-xs-6 col-md-3'><a href='#' class='thumbnail'><i class='ionicons ion-tshirt'></i><label class='category_name'>&nbsp;" + categoryName + "</label><br><div id='cat_term" + categoryId + "' style='display: inline-block;'></div><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></a></div>";
         return html;
     }
 
@@ -138,7 +139,7 @@
     // *************** LOGIC FOR TERMS ***************
     function makeTermInputElement(termName){
         // make a string of HTML
-        var html = '<li>' + termName + '</li>';
+        var html = "<li class='list-unstyled'>" + termName + "</li>";
         return html;
     }
 

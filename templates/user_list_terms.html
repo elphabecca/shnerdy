@@ -4,17 +4,27 @@
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<h2>Select the terms you'd like to search for:</h2>
+<div class="container-fluid">
+<div class="row row-centered">
+<div id="listy" class="col-xs-6 col-centered">
+    <h4>Select terms to search:</h4>
 
-<form action="/snearch_summary" method="POST">
-    
-    {% for term in list_o_terms %}
-    <input type="checkbox" name="search_term" value="{{ term }}" checked="checked">{{ term }}<br>
-    {% endfor %}<br>
+    <form action="/snearch_summary" method="POST">
+        
+        <div class="row">
+        <div id="term-check" class="col-xs-12">
+            {% for term in list_o_terms %}
+            <input type="checkbox" name="search_term" value="{{ term }}" checked="checked">&nbsp;{{ term }}<br>
+            {% endfor %}<br>
+        </div>
+        </div>
 
-    <button type="submit" id="search_terms" name="search_terms" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">SNEARCH!</button>
+        <button type="submit" id="search_terms" name="search_terms" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">SNEARCH!</button>
 
-</form>
+    </form>
+</div>
+</div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
