@@ -179,8 +179,7 @@ def add_category():
     category_object = Term.query.filter(Term.term == category).first()
     category_id = category_object.id
 
-    results_dict = {'message' : "'%s' has been added as a category!" % category,
-                    "category_name" : category,
+    results_dict = {"category_name" : category,
                     "user_id" : user_id,
                     "category_id" : category_id}
 

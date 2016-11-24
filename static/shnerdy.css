@@ -1,16 +1,17 @@
 
-
-#search-shnerdy {
-    background-color: rgb(230, 230, 230);
-    text-align: left;
-    margin: 10px;
+#new_category_box {
+    width: 50%;
 }
 
-#your-cat {
-    background-color: rgb(230, 230, 230);
-    margin: 10px;
-    text-align: left;
+.new_term_box {
+    width : 50%;
 }
+
+.thumbnail {        
+    height: 125px;
+    overflow: auto;
+}
+
 
 body { 
     background-size: cover;
@@ -46,7 +47,7 @@ body {
 
 #title-box {
     /*background-color: red;*/
-    background: rgba(255, 255, 240, .65);
+    background: rgba(255, 255, 240, .75);
     margin: 200px auto;
     padding: 20px 20px;
 }
@@ -64,6 +65,26 @@ body {
 
 #shnerdy-main-sub {
     font-family: 'Droid Sans', sans-serif;
+}
+
+#search-shnerdy {
+    background-color: rgba(230, 230, 230, .9);
+    text-align: left;
+    margin: 10px;
+}
+
+#your-cat {
+    background-color: rgba(230, 230, 230, .9);
+    margin: 10px;
+    text-align: left;
+}
+
+.form-control, .btn, .btn-link {
+    text-align: left;
+}
+
+#new_category_box {
+    margin-bottom: 5px;
 }
 
 

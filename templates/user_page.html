@@ -3,53 +3,45 @@
 {% block content %}
 
 <script type="text/javascript">$('#user_page_link').hide();</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <br><br>
 
 <div id="user-page" class="container-fluid">
 <div class="row row-centered">
     <div id="search-shnerdy" class="col-xs-3 col-centered">
-        <h4>Search for shirts...</h4>
+        <h4>Search:</h4>
             
             {% if categories == [] %}
                 <div id="if_cat-empty">
                     <p>Looks like you haven't created any searches yet. Add some here!</p>
                 </div>
-
-                <div id="snearch_div_hide" hidden>
-                    <form action="/listy" id="snearch_form" method="POST">
-                        <select id="category_dropdown" name="categories">
-                            <option name="cat_drop_opt" value="cat_name">Please Select...</option>
-                        </select>
-                            <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
-                            <input type="submit" id="snearch_submit" name="search_shirts" value="Select">
-                    </form><br><br>
-                </div>
             {% endif %}
 
             {% if categories != [] %}
-                <div id="snearch_div">
-                    <form action="/listy" id="snearch_form" method="POST">
-                        <select id="category_dropdown" name="categories">
-                            <option name="cat_drop_opt" value="cat_name">Please Select...</option>
-                        </select>
-                            <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
-                            <input type="submit" id="snearch_submit" name="search_shirts" value="Select">
-                    </form><br><br>
-                </div>
+            <div class="dropdown">
+                <form action="/listy" method="POST">
+                    <button id="snearch_form" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Your Categories
+                    <span class="caret"></span></button>
+                    <!-- <input class="span2" id="search_type" name="search_type" type="hidden"> -->
+                    <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
+                        <ul id="drop_cat" class="dropdown-menu">
+                        </ul>
+                </form>
+            </div><br>
             {% endif %}  
 
             <script type="text/javascript">
 
                 function updateDropdown(results) {
-                    $('#category_dropdown').empty();
+                    $('#drop_cat').empty();
                     var insertHtml = "";
                     var cat_list = results.cat_list;
                     for (i = 0; i < cat_list.length; i++) {
                         var list_item = "'" + cat_list[i] + "'";
-                        insertHtml += '<option name="cat_drop_opt" value=' + list_item + '>' + cat_list[i] + '</option>'
-                    };
-                    $('#category_dropdown').append(insertHtml);
+                        insertHtml += "<li><input type='submit' class='form-control btn btn-link' name='categories' value=" + list_item + "<a href='#'></a></li>"};
+                        // "<li onclick='$('#search_type').val('zip'); $('#searchForm').submit()">Search Zip Code</li>"
+                    $('#drop_cat').append(insertHtml);
                 }
 
                 function updateDropdownRequest(evt) {
@@ -62,29 +54,27 @@
                     console.dir(evt)
                 }
 
-                $('#category_dropdown').on('click', updateDropdownRequest);
+                $('#snearch_form').on('click', updateDropdownRequest);
 
             </script>
 
-        <h4>...or add a new category to search!</h4>
+        <hr><h4>Add category:</h4>
             <form action='/add_category' id="cat_add_form" method="POST">
-                Category Name: <input type="text" id="new_category_box" name="category">
+                <input type="text" id="new_category_box" name="category">
                 <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
-                <input type="submit" id="category_add" value="Add">
+                <input type="submit" class="btn btn-primary" id="category_add" value="Add">
             </form><br><br>
     </div>
 
     <div id="your-cat" class="col-xs-8 col-centered">
         <h4>Your Categories: </h4>
-        <div id="term_div">
-            {% for category in categories %}
-                <form class="term_add_form" method="POST">
-                <br><label class="category_name">{{ category.term }}</label><br>
-                    <input type="text" class="new_term_box" name="new_term_box">
-                    <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
-                    <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
-                    <button class="term_button">Add</button>
-                </form>
+
+        
+        <div class="row" id="term_div">
+        {% for category in categories %}
+            <div class="col-xs-6 col-md-3">
+                <a href="#" class="thumbnail">
+                <label class="category_name">{{ category.term }}</label><br>
                     <div id="cat_term{{ category.id }}">
                         {% for term in terms %}
                             {% if term.parent_id == category.id %}
@@ -92,8 +82,16 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-            {% endfor %}
-        </div>
+                <form class="term_add_form" method="POST">
+                    <input type="text" class="new_term_box" name="new_term_box">
+                    <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
+                    <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
+                    <button class="term_button">Add</button>
+                </form>
+                </a>
+            </div>
+        {% endfor %}
+        </div> 
     </div>
 </div>
 </div>
@@ -104,25 +102,19 @@
     // *************** LOGIC FOR CATEGORIES ***************
     function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        var html = '<form class="term_add_form" method="POST"><br><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add</button></form><div id="cat_term' + categoryId + '"></div>';
+        var html = "<div class='col-xs-6 col-md-3'><a href='#' class='thumbnail'><br><label class='category_name'>" + categoryName + "</label><br><div id='cat_term" + categoryId + "' style='display: inline-block;'></div><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></a></div>";
         return html;
     }
 
     function showConfirmation(results) {
-        // alert the user their category has been added
         // empty the text area of the form
         // append their new category to the list which displays on their page
-        alert(results.message);
         $('#new_category_box').val("");
         var someHtml = makeCategoryInputElement(results.category_name,
                                                 results.user_id,
                                                 results.category_id);
         $('#term_div').prepend(someHtml);
 
-        if ($('#if_cat-empty')) {
-            $('#if_cat-empty').hide()
-            $('#snearch_div_hidden').show()
-        }
         $('#' + results.category_id).on('click', submitTerm);
     }
     
@@ -151,10 +143,8 @@
     }
 
     function showConfirmationTerm(results) {
-        // alert the user their term has been added
         // empty the text area of the form
         // append their new term to the list which displays on their page
-        alert(results.message);
         var box = $('.new_term_box');
         box.val("");
         var term = results.term_name;
@@ -168,9 +158,9 @@
 
         var thingTheyClickedOn = $(evt.currentTarget);
         var listOfInputs = thingTheyClickedOn.siblings();
-        var termInput = $(listOfInputs[3]);
-        var userInfo = $(listOfInputs[4]);
-        var catInfo = $(listOfInputs[5]);
+        var termInput = $(listOfInputs[0]);
+        var userInfo = $(listOfInputs[1]);
+        var catInfo = $(listOfInputs[2]);
 
        var formInputs = {
             "term" : termInput.val(),
@@ -186,6 +176,47 @@
     }
     
     $('.term_button').on('click', submitTerm);
+
 </script>
 
 {% endblock %}
+
+
+<!-- MASONRY:
+https://www.sitepoint.com/bootstrap-tabs-play-nice-with-masonry/
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+<div role="tabpanel" class="tab-pane active" id="panel-1">
+
+<div role="tabpanel">
+
+        <ul class="nav nav-tabs" role="tablist" hidden>
+            <li role="presentation" class="active">
+            <a href="#panel-1" aria-controls="panel-1" role="tab" data-toggle="tab"></a></li>
+        </ul>
+
+        <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="panel-1">
+        <div class="row masonry-container" id="term_div">
+
+        </div> 
+        </div>
+        </div>
+        </div>
+
+var $container = $('.masonry-container');
+    
+    $(document).ready( function () {
+        $container.masonry({
+            columnWidth: '.item',
+            itemSelector: '.item'
+        });   
+    });
+
+    function alignMasonry() {
+        $container.masonry({
+            columnWidth: '.item',
+            itemSelector: '.item'
+        });
+    }; -->
+<!-- '<form class="term_add_form" method="POST"><br><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add</button></form><div id="cat_term' + categoryId + '"></div>'; -->
