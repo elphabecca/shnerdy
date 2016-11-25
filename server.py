@@ -394,7 +394,6 @@ def add_shirt_to_db_yay():
     """Add shirt to the db"""
 
     user_id = session.get('user')
-    print "SERIOUSLY", user_id, type(user_id)
     shirt_img = str(request.form.get('img'))
     shirt_price = str(request.form.get('price'))
     shirt_url = str(request.form.get('url'))

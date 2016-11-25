@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h3>Your favorites ({{ num_shirts }} shirts): </h3>
+<link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
 <script type="text/javascript">
     
@@ -10,15 +10,31 @@
 
 </script>
 
-<ul>
-{% for shirt in shirts %}
+<div class="container-fluid">
+<div class="row row-centered"></div>
+<div class="col-xs-1"></div>
+    <div id="favorites" class="col-xs-10">
+            <h3>Your favorites ({{ num_shirts }} shirts): </h3><br>
 
-    <img src={{ shirt["img"] }}>
-    <li>Price: {{ shirt["price"] }}</li>
-    <li><a href={{ shirt["url"] }}>Shirt Link</a></li>
-    <br><br>
+            <div class="row">
+            {% for shirt in shirts %}
+                <div class="col-xs-3">
+                    <div id="fave-thumbnail" class="thumbnail">
+                        <img class="image-thumb" src={{ shirt["img"] }}>
+                        <div class="caption">
+                        <div class="row">
+                            <div class="col-xs-6" id="price"><i class='ionicons ion-social-usd'></i>&nbsp;{{ shirt["price"] }}</div>
+                            <div class="col-xs-6" id="link_div"><a id="link" href={{ shirt["url"] }} target="_blank"><i class='ionicons ion-link'></i>&nbsp;Link</a></div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
 
-{% endfor %}
-</ul>
+    </div>
+<div class="col-xs-1"></div>
+</div>
+</div>
 
 {% endblock %}

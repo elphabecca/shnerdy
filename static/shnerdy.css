@@ -1,34 +1,18 @@
 
-#shnummary_div {
-    background: rgba(230, 230, 230, .9);
-    padding: 5%;
+#favorites {
+    background-color: rgb(230, 230, 230);
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 
-#snearch_results_div {
-    background: rgba(230, 230, 230, .9);
-    padding: 5%;
+.image-thumb {
+    width: inherit;
+    padding: 10%;
 }
 
-#cat-title {
-    padding-left: 15%;
-    padding-bottom: 10px;
-    padding-top: 10px;
+#shnum-row {
+    margin-top: 30px;
 }
-
-#search_terms {
-    text-align: center;
-}
-
-#listy {
-    background-color: rgba(230, 230, 230, .9);
-    margin-top: 5%;
-    padding: 3%;
-}
-
-#term-check {
-    text-align: left;
-    padding-left: 37%;
-    }    
 
 body { 
     background-size: cover;
@@ -116,7 +100,7 @@ body {
     width : 50%;
 }
 
-.thumbnail {        
+#usr-pg-div > .thumbnail {        
     height: 125px;
     overflow: auto;
 }
@@ -128,6 +112,61 @@ body {
 h3, h4 {
     font-family: 'Delius Unicase', cursive;
 }
+
+#price {
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+#link_div {
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+#nay_shirt {
+    margin-right: 10%;
+    margin-left: 10%;
+}
+
+.ionicons {
+    display: inline-block; 
+}
+
+#snearch_results_div > img {
+    height: 350px;
+}
+
+#shnummary_div {
+    background: rgba(230, 230, 230, .9);
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+#snearch_results_div {
+    background: rgba(230, 230, 230, .9);
+    padding-bottom: 15px;
+}
+
+#cat-title {
+    padding-left: 15%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+#search_terms {
+    text-align: center;
+}
+
+#listy {
+    background-color: rgba(230, 230, 230, .9);
+    margin-top: 5%;
+    padding: 3%;
+}
+
+#term-check {
+    text-align: left;
+    padding-left: 37%;
+    } 
 
 
 

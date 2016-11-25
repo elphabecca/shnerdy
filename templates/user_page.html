@@ -73,7 +73,7 @@
         
         <div class="row" id="term_div">
         {% for category in categories %}
-            <div class="col-xs-6 col-md-3">
+            <div id="usr-pg-div" class="col-xs-6 col-md-3">
                 <a href="#" class="thumbnail">
                 <label class="category_name"><i class="ionicons ion-tshirt"></i>&nbsp;{{ category.term }}</label><br>
                     <ul class='list-unstyled'><div id="cat_term{{ category.id }}">
@@ -220,4 +220,5 @@ var $container = $('.masonry-container');
             itemSelector: '.item'
         });
     }; -->
+
 <!-- '<form class="term_add_form" method="POST"><br><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add</button></form><div id="cat_term' + categoryId + '"></div>'; -->

@@ -1,35 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
 <div class="container-fluid">
-<div class="row row-centered">
+<div id="shnum-row" class="row row-centered">
 
-            <div id="shnummary_div" class="col-xs-3 col-centered">
-                <h3>Snearch Summary:</h3>
+        <div class="col-xs-1"></div>
+            <div id="shnummary_div" class="col-xs-3">
+                <h4>Snearch Summary:</h4><hr>
 
+                <ul class='list-unstyled'>
                 {% for term in search_terms %}
-                <li>{{ term }} ({{ curr_search_dict[term]['total_count'] }} results)</li>
+                    {% if curr_search_dict[term]['total_count'] != 0 %}
+                        <li><i class='ionicons ion-tshirt'></i> {{ term }} ({{ curr_search_dict[term]['total_count'] }} shirts)</li>
+                    {% endif %}
                 {% endfor %}
+                </ul>
 
-                <p>Total search results: {{ result_sum }}</p>
+                <p><strong>{{ result_sum }} Total Shirts</strong></p>
             </div>
-
-            <div id='snearch_results_div' class="col-xs-7 col-centered">
+        <div class="col-xs-1"></div>
+            <div id='snearch_results_div' class="col-xs-6">
                 <h3>Snearch Results:</h3>
 
                 <p>You found this shirt by searching: 
                     '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
-                        <div id="duplicate" class="boxed" hidden>Duplicate notice</div>
-                        <img id="image" src="http://i.imgur.com/ly4VZeN.gif">
-                        <li id="price">PRICE</li>
-                        <li><a id="link" href="http://http://www.kittenwar.com/" target="_blank">Shirt Link</a></li>
+                        <div id="duplicate" class="alert alert-warning" hidden>Duplicate notice</div>
+                        <img id="image" src="http://i.imgur.com/ly4VZeN.gif"><br><br>
+                        <button type="button" id="yay_shirt" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></button>
+                        <button type="button" id="nay_shirt" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span></button>
+                        <button type="button" id="next" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
+                        <div class="row">
+                            <div class="col-xs-6" id="price"><i class='ionicons ion-social-usd'>PRICE</i></div>
+                            <div class="col-xs-6" id="link_div"><a id="link" href="http://http://www.kittenwar.com/" target="_blank"><i class='ionicons ion-link'></i>&nbsp;Shirt Link</a></div>
+                        </div>
                         <li id="etsy_id" hidden>Etsy ID Placeholder</li>
-                        <input type="button" id="yay_shirt" value="I love this shirt!"></button>
-                        <input type="button" id="next" value="This shirt is Meh."></button>
-                        <input type="button" id="nay_shirt" value="I don't like this shirt."></button>
-
-            </div><br><br>
+            </div>
+        <div class="col-xs-1"></div>
 
 </div>
 </div>
@@ -140,7 +148,7 @@
         var etsy_id = shirt_object['etsy_id']
 
         $('#image').attr('src', shirt_image_url);
-        $('#price').html(shirt_price);
+        $('#price').html("<i class='ionicons ion-social-usd'>&nbsp;" + shirt_price + "</i>");
         $('#link').attr('href', shirt_url);
         $('#user_search_term').html(user_search_term);
         $('#etsy_id').html(etsy_id);
@@ -160,11 +168,12 @@
     function yayShirt(evt) {
         var thingTheyClickedOn = $(evt.currentTarget);
         var listOfInputs = thingTheyClickedOn.siblings();
-        var img = listOfInputs[2]['currentSrc'];
-        var price = listOfInputs[3]['innerHTML'];
-        var url = listOfInputs[4].children[0].href;
-        var etsy_id = listOfInputs[5]['innerHTML'];
-
+        var img = listOfInputs[3]['src'];
+        var etsy_id = listOfInputs[9]['innerHTML'];
+        var url = listOfInputs[8].children[1].children[0].href;
+        var price = listOfInputs[8].children[0].children[0].innerHTML;
+        price = price.slice(6)
+        
         shirtData = {
             'img' : img,
             'price' : price,
@@ -180,7 +189,7 @@
     function nayShirt(evt) {
         var thingTheyClickedOn = $(evt.currentTarget);
         var listOfInputs = thingTheyClickedOn.siblings();
-        var etsy_id = listOfInputs[5]['innerHTML'];
+        var etsy_id = listOfInputs[9]['innerHTML'];
 
         shirtData = {'etsy_id' : etsy_id};
 
