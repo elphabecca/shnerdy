@@ -1,4 +1,8 @@
 
+a.thumbnail {
+    pointer-events: none;
+}
+
 #favorites {
     background-color: rgb(230, 230, 230);
     margin-top: 50px;
@@ -101,11 +105,11 @@ body {
 }
 
 #new_category_box {
-    width: 50%;
+    width: 65%;
 }
 
 .new_term_box {
-    width : 50%;
+    width : 60%;
 }
 
 #usr-pg-div > .thumbnail {        

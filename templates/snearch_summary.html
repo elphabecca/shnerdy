@@ -28,9 +28,9 @@
                     '<label id="user_search_term"><strong>User search term placeholder</strong></label>'</p>
                         <div id="duplicate" class="alert alert-warning" hidden>Duplicate notice</div>
                         <img id="image" src="http://i.imgur.com/ly4VZeN.gif"><br><br>
-                        <button type="button" id="yay_shirt" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></button>
-                        <button type="button" id="nay_shirt" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span></button>
-                        <button type="button" id="next" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
+                        <button type="button" id="yay_shirt" class="btn btn-danger btn-lg" data-toggle="tooltip" data-placement="left" title="Save to Favorites"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></button>
+                        <button type="button" id="nay_shirt" class="btn btn-warning btn-lg" data-toggle="tooltip" data-placement="left" title="Dislike"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span></button>
+                        <button type="button" id="next" class="btn btn-success btn-lg" data-toggle="tooltip" data-placement="left" title="Next"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
                         <div class="row">
                             <div class="col-xs-6" id="price"><i class='ionicons ion-social-usd'>PRICE</i></div>
                             <div class="col-xs-6" id="link_div"><a id="link" href="http://http://www.kittenwar.com/" target="_blank"><i class='ionicons ion-link'></i>&nbsp;Shirt Link</a></div>
@@ -201,6 +201,10 @@
 
     $('#yay_shirt').on('click', yayShirt);
     $('#nay_shirt').on('click', nayShirt);
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 
 </script>
 

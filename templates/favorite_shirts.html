@@ -23,7 +23,7 @@
             {% for shirt in shirts %}
                 <div class="col-xs-3">
                     <div id="fave-thumbnail" class="thumbnail">
-                        <img class="image-thumb" src={{ shirt["img"] }}>
+                        <a href={{ shirt["url"] }} target="_blank"><img class="image-thumb" src={{ shirt["img"] }}></a>
                         <div class="caption">
                         <div class="row">
                             <div class="col-xs-6" id="price"><i class='ionicons ion-social-usd'></i>&nbsp;{{ shirt["price"] }}</div>
