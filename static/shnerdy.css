@@ -18,10 +18,12 @@ body {
     background-size: cover;
     background-position: center center;
     background-image: url(tshirt_background_blur.png);
+    height: 100%;
+    width: 100%;
+    position: fixed;
 }
 
 .navbar, .navbar-default .navbar-brand, .navbar-default .navbar-nav li a {
-    background-color: rgb(230, 230, 230);
     border: none;
     border-radius: 0;
     color: rgb(84,84,84);
@@ -29,8 +31,14 @@ body {
     font-size: 18px;
 }
 
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-nav li a:hover {
+.navbar-nav:hover li a:hover {
   color: rgb(0,178,51);
+  background-color: rgb(230,230,230);
+}
+
+.navbar-brand {
+    margin-right: 10px;
+    pointer-events: none;
 }
 
 .row-centered {

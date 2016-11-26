@@ -3,8 +3,16 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
-<script type="text/javascript">$('#user_page_link').hide();</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    
+    $(document).ready(function() {
+        $(".nav li").removeClass("active");
+        $('#user_page_link').addClass('active');
+        });
+
+</script>
 
 <br><br>
 

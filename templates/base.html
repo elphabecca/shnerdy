@@ -34,7 +34,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/">Shnerdy</a></li>
+        <li id="shner-home"><a href="/">Shnerdy</a></li>
         {% if session['user'] %}
         <li id="user_page_link"><a href="/{{ session_user_id }}">Your Categories</a></li>
         <li id="favorites_link"><a href="/favorites">Your Favorites</a></li>
@@ -54,9 +54,8 @@
     <!-- FLASH MESSAGING -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <div class="alert alert-info alert-dismissible" role="alert">
+        <div class="alert alert-info" role="alert">
             <ul class=flashes>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 {% for message in messages %}
                     <li>{{ message }}</li>
                 {% endfor %}
