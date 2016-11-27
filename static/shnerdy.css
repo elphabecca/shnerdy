@@ -81,13 +81,17 @@ body {
 #search-shnerdy {
     background-color: rgba(230, 230, 230, .9);
     text-align: left;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    margin-right: 10px
 }
 
 #your-cat {
     background-color: rgba(230, 230, 230, .9);
     text-align: left;
-    float: right;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px
 }
 
 .form-control, .btn, .btn-link {
@@ -158,7 +162,6 @@ body {
 }
 
 #cat-title {
-    padding-left: 15%;
     padding-bottom: 10px;
     padding-top: 10px;
 }

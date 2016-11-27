@@ -17,8 +17,8 @@
 <br><br>
 
 <div id="user-page" class="container-fluid">
-<div class="row row-centered">
-    <div id="search-shnerdy" class="col-xs-3 col-centered">
+<div class="row">
+    <div id="search-shnerdy" class="col-xs-3">
         <br><h2>Search:</h2>
             
             {% if categories == [] %}
@@ -30,7 +30,7 @@
             {% if categories != [] %}
             <div class="dropdown">
                 <form action="/listy" method="POST">
-                    <button id="snearch_form" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Your Categories
+                    <button id="snearch_form" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Categories
                     <span class="caret"></span></button>
                     <!-- <input class="span2" id="search_type" name="search_type" type="hidden"> -->
                     <input type="hidden" id="user_id_drop" name="user_id" value="{{ user.id }}">
@@ -75,7 +75,7 @@
             </form><br><br>
     </div>
 
-    <div id="your-cat" class="col-xs-8 col-centered">
+    <div id="your-cat" class="col-xs-8">
         <div id="cat-title"><h2>Your Categories: </h2></div>
 
         
