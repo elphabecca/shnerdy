@@ -6,22 +6,19 @@
 <div class="container-fluid">
 <div id="shnum-row" class="row row-centered">
 
-        <div class="col-xs-1 filler"><div class="row"></div></div>
             <div id="shnummary_div" class="col-xs-3">
                 <h4>Snearch Summary:</h4><hr>
 
                 <ul class='list-unstyled'>
                 {% for term in search_terms %}
-                    {% if curr_search_dict[term]['total_count'] != 0 %}
-                        <li><i class='ionicons ion-tshirt'></i> {{ term }} ({{ curr_search_dict[term]['total_count'] }} shirts)</li>
-                    {% endif %}
+                    <li><i class='ionicons ion-tshirt'></i> {{ term }} ({{ curr_search_dict[term]['total_count'] }} shirts)</li>
                 {% endfor %}
                 </ul>
 
                 <p><strong>{{ result_sum }} Total Shirts</strong></p>
             </div>
-        <div class="col-xs-1 filler"><div class="row"></div></div>
-            <div id='snearch_results_div' class="col-xs-6">
+
+            <div id='snearch_results_div' class="col-xs-8">
                 <h3>Snearch Results:</h3>
 
                 <p>You found this shirt by searching: 
@@ -37,7 +34,7 @@
                         </div>
                         <li id="etsy_id" hidden>Etsy ID Placeholder</li>
             </div>
-        <div class="col-xs-1 filler"><div class="row"></div></div>
+
 
 </div>
 </div>

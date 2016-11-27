@@ -287,8 +287,8 @@ def create_shnummary():
         result_sum += int(count)
 
         # If there are no results for a particular term add a flash message to alert them
-        if count == 0:
-            flash("The search for '%s' didn't return any results." % term)
+        # if count == 0:
+        #     flash("The search for '%s' didn't return any results." % term)
 
     return render_template('snearch_summary.html',
                            search_terms=search_terms,

@@ -19,7 +19,7 @@
 <div id="user-page" class="container-fluid">
 <div class="row">
     <div id="search-shnerdy" class="col-xs-3">
-        <br><h2>Search:</h2>
+        <h2>Search:</h2>
             
             {% if categories == [] %}
                 <div id="if_cat-empty">
@@ -37,7 +37,7 @@
                         <ul id="drop_cat" class="dropdown-menu">
                         </ul>
                 </form>
-            </div><br>
+            </div>
             {% endif %}  
 
             <script type="text/javascript">
@@ -67,12 +67,12 @@
 
             </script>
 
-        <hr><br><h2>Add category:</h2>
+        <hr><h2>Add category:</h2>
             <form action='/add_category' id="cat_add_form" method="POST">
                 <input type="text" id="new_category_box" name="category">
                 <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
                 <input type="submit" class="btn btn-default" id="category_add" value="Add">
-            </form><br><br>
+            </form><br>
     </div>
 
     <div id="your-cat" class="col-xs-8">

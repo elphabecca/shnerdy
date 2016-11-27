@@ -143,22 +143,23 @@ body {
 
 #shnummary_div {
     background: rgba(230, 230, 230, .9);
+    margin-left: 25px;
+    margin-bottom: 30px;
+    margin-right: 20px;
     padding-top: 20px;
     padding-bottom: 10px;
-    padding-right: 3%;
-    padding-left: 3%;
 }
 
 #snearch_results_div {
     background: rgba(230, 230, 230, .9);
     padding-bottom: 15px;
-    padding-right: 5%;
-    padding-left: 5%;
+    margin-left: 20px;
+    margin-bottom: 30px;
+    margin-right: 25px;
 }
 
 #cat-title {
     padding-bottom: 10px;
-    padding-top: 10px;
 }
 
 #search_terms {
