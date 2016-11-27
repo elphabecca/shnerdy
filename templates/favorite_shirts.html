@@ -13,15 +13,33 @@
 
 </script>
 
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
 <div class="container-fluid">
 <div class="row row-centered"></div>
 <div class="col-xs-1"></div>
     <div id="favorites" class="col-xs-10">
             <h3>Your Favorites ({{ num_shirts }} shirts): </h3><br>
 
+                    <div role="tabpanel" class="tab-panel active" id="panel-1">
+
+                        <div role="tabpanel">
+
+                        <ul class="nav nav-tabs" role="tablist" hidden>
+                            <li role="presentation" class="active">
+                            <a href="#panel-1" aria-controls="panel-1" role="tab" data-toggle="tab"></a></li>
+                        </ul>
+
             <div class="row">
+
+                    <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="panel-1">
+                    <div class="container-fluid">
+                    <div class="row masonry-container">
+                    
             {% for shirt in shirts %}
-                <div class="col-xs-3">
+
+                    <div class="col-md-4 col-sm-6 item">
                     <div id="fave-thumbnail" class="thumbnail">
                         <a href={{ shirt["url"] }} target="_blank"><img class="image-thumb" src={{ shirt["img"] }}></a>
                         <div class="caption">
@@ -30,14 +48,49 @@
                             <div class="col-xs-6" id="link_div"><a id="link" href={{ shirt["url"] }} target="_blank"><i class='ionicons ion-link'></i>&nbsp;Link</a></div>
                         </div>
                         </div>
-                    </div>
-                </div>
+                    </div> <!-- end thumbnail div -->
+                    </div> <!-- end item div -->
+
             {% endfor %}
-            </div>
+                    
+                    </div> <!-- end masonry container -->
+                    </div> <!-- end container fluid -->
+                    </div> <!-- end tabpanel -->
+                    </div> <!-- end tab-content -->
+
+            </div> <!-- end class "row" -->
 
     </div>
 <div class="col-xs-1"></div>
 </div>
 </div>
 
+<script type="text/javascript">
+    
+    var $container = $('.masonry-container');
+    
+    $(document).ready( function () {
+        $container.masonry({
+            columnWidth: '.item',
+            itemSelector: '.item'
+        });   
+    });
+
+    function alignMasonry() {
+        $container.masonry({
+            columnWidth: '.item',
+            itemSelector: '.item'
+        });
+    };
+
+</script>
+
 {% endblock %}
+
+<!-- MASONRY:
+https://www.sitepoint.com/bootstrap-tabs-play-nice-with-masonry/ -->
+
+
+
+
+
