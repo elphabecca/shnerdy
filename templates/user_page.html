@@ -90,7 +90,7 @@
                         </div>
 
                         <!-- List group -->
-                        <div class='panel-body' style='max-height: 90px;overflow-y: scroll;'>
+                        <div class='panel-body' style='max-height: 90px;overflow-y: scroll;font-size: .85em;'>
                             <ul class='list-group list-unstyled' id='cat_term{{ category.id }}'>
                                 {% for term in terms %}
                                     {% if term.parent_id == category.id %}
@@ -122,7 +122,7 @@
     // *************** LOGIC FOR CATEGORIES ***************
     function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        var html = "<div id='usr-pg-div' class='col-xs-6 col-md-3'><div class='panel panel-default'><div class='panel-heading'><strong><i class='ionicons ion-tshirt'></i>&nbsp;" + categoryName + "</strong></div><div class='panel-body' style='max-height: 90px;overflow-y: scroll;'><ul class='list-group list-unstyled' id='cat_term" + categoryId + "'></ul></div><div class='panel-footer'><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></div></div></div>";
+        var html = "<div id='usr-pg-div' class='col-xs-6 col-md-3'><div class='panel panel-default'><div class='panel-heading'><strong><i class='ionicons ion-tshirt'></i>&nbsp;" + categoryName + "</strong></div><div class='panel-body' style='max-height: 90px;overflow-y: scroll; font-size: .85em;'><ul class='list-group list-unstyled' id='cat_term" + categoryId + "'></ul></div><div class='panel-footer'><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></div></div></div>";
         return html;
     }
 
