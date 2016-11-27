@@ -22,9 +22,7 @@ body {
     background-size: cover;
     background-position: center center;
     background-image: url(tshirt_background_blur.png);
-    height: 100%;
-    width: 100%;
-    position: fixed;
+    background-attachment: fixed;
 }
 
 .navbar, .navbar-default .navbar-brand, .navbar-default .navbar-nav li a {
@@ -121,10 +119,6 @@ body {
     width: 50%
 }
 
-h3, h4 {
-    font-family: 'Delius Unicase', cursive;
-}
-
 #price {
     padding-top: 3%;
     padding-bottom: 3%;
@@ -152,11 +146,15 @@ h3, h4 {
     background: rgba(230, 230, 230, .9);
     padding-top: 20px;
     padding-bottom: 10px;
+    padding-right: 3%;
+    padding-left: 3%;
 }
 
 #snearch_results_div {
     background: rgba(230, 230, 230, .9);
     padding-bottom: 15px;
+    padding-right: 5%;
+    padding-left: 5%;
 }
 
 #cat-title {

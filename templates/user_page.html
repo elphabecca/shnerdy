@@ -19,7 +19,7 @@
 <div id="user-page" class="container-fluid">
 <div class="row row-centered">
     <div id="search-shnerdy" class="col-xs-3 col-centered">
-        <br><h4>Search:</h4>
+        <br><h2>Search:</h2>
             
             {% if categories == [] %}
                 <div id="if_cat-empty">
@@ -67,39 +67,50 @@
 
             </script>
 
-        <hr><br><h4>Add category:</h4>
+        <hr><br><h2>Add category:</h2>
             <form action='/add_category' id="cat_add_form" method="POST">
                 <input type="text" id="new_category_box" name="category">
                 <input type="hidden" id="user_id_category" name="user_id" value="{{ user.id }}">
-                <input type="submit" class="btn btn-primary" id="category_add" value="Add">
+                <input type="submit" class="btn btn-default" id="category_add" value="Add">
             </form><br><br>
     </div>
 
     <div id="your-cat" class="col-xs-8 col-centered">
-        <div id="cat-title"><h4>Your Categories: </h4></div>
+        <div id="cat-title"><h2>Your Categories: </h2></div>
 
         
         <div class="row" id="term_div">
-        {% for category in categories %}
-            <div id="usr-pg-div" class="col-xs-6 col-md-3">
-                <a class="thumbnail">
-                <label class="category_name"><i class="ionicons ion-tshirt"></i>&nbsp;{{ category.term }}</label><br>
-                    <ul class='list-unstyled'><div id="cat_term{{ category.id }}">
-                        {% for term in terms %}
-                            {% if term.parent_id == category.id %}
-                                <li>{{ term.term }}</li>
-                            {% endif %}
-                        {% endfor %}
-                    </div></ul>
-                <form class="term_add_form" method="POST">
-                    <input type="text" class="new_term_box" name="new_term_box">
-                    <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
-                    <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
-                    <button class="term_button">Add</button>
-                </form>
-                </a>
+            {% for category in categories %}
+            <div id='usr-pg-div' class='col-xs-6 col-md-3'>
+            
+                <div class='panel panel-default'>
+                        <!-- Default panel contents -->
+                        <div class='panel-heading'>
+                            <strong><i class='ionicons ion-tshirt'></i>&nbsp;{{ category.term }}</strong>
+                        </div>
+
+                        <!-- List group -->
+                        <div class='panel-body' style='max-height: 90px;overflow-y: scroll;'>
+                            <ul class='list-group list-unstyled' id='cat_term{{ category.id }}'>
+                                {% for term in terms %}
+                                    {% if term.parent_id == category.id %}
+                                        <li>{{ term.term }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class='panel-footer'>
+                            <form class='term_add_form' method='POST'>
+                                <input type='text' class='new_term_box' name='new_term_box'>
+                                <input type='hidden' class='user_id_term' name='user_id' value='{{ user.id }}'>
+                                <input type='hidden' class='parent_id' name='parent_id' value='{{ category.id }}'>
+                                <button class='term_button'>Add</button>
+                            </form>
+                        </div>
+                </div>
+            
             </div>
-        {% endfor %}
+            {% endfor %}
         </div> 
     </div>
 </div>
@@ -111,7 +122,7 @@
     // *************** LOGIC FOR CATEGORIES ***************
     function makeCategoryInputElement(categoryName, userId, categoryId){
         // make a string of HTML
-        var html = "<div class='col-xs-6 col-md-3'><a class='thumbnail'><i class='ionicons ion-tshirt'></i><label class='category_name'>&nbsp;" + categoryName + "</label><br><div id='cat_term" + categoryId + "' style='display: inline-block;'></div><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></a></div>";
+        var html = "<div id='usr-pg-div' class='col-xs-6 col-md-3'><div class='panel panel-default'><div class='panel-heading'><strong><i class='ionicons ion-tshirt'></i>&nbsp;" + categoryName + "</strong></div><div class='panel-body' style='max-height: 90px;overflow-y: scroll;'><ul class='list-group list-unstyled' id='cat_term" + categoryId + "'></ul></div><div class='panel-footer'><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></div></div></div>";
         return html;
     }
 
@@ -159,7 +170,7 @@
         var term = results.term_name;
         var termHtml = makeTermInputElement(term);
         var divName = '#cat_term' + results.parent_id
-        $(divName).append(termHtml);
+        $(divName).prepend(termHtml);
     }
 
     function submitTerm(evt) {
@@ -229,4 +240,25 @@ var $container = $('.masonry-container');
         });
     }; -->
 
-<!-- '<form class="term_add_form" method="POST"><br><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add</button></form><div id="cat_term' + categoryId + '"></div>'; -->
+<!-- 
+
+            <a class="thumbnail">
+                <label class="category_name"><i class="ionicons ion-tshirt"></i>&nbsp;{{ category.term }}</label><br>
+                    <ul class='list-unstyled'><div id="cat_term{{ category.id }}">
+                        {% for term in terms %}
+                            
+                                <li>{{ term.term }}</li>
+                            
+                        {% endfor %}
+                    </div></ul>
+                <form class="term_add_form" method="POST">
+                    <input type="text" class="new_term_box" name="new_term_box">
+                    <input type="hidden" class="user_id_term" name="user_id" value="{{ user.id }}">
+                    <input type="hidden" class="parent_id" name="parent_id" value="{{ category.id }}">
+                    <button class="term_button">Add</button>
+                </form>
+            </a>
+
+"<div class='col-xs-6 col-md-3'><a class='thumbnail'><i class='ionicons ion-tshirt'></i><label class='category_name'>&nbsp;" + categoryName + "</label><br><div id='cat_term" + categoryId + "' style='display: inline-block;'></div><form class='term_add_form' method='POST'><input type='text' class='new_term_box' name='new_term_box'><input type='hidden' class='user_id_term' name='user_id' value='" + userId + "'><input type='hidden' class='parent_id' name='parent_id' value='" + categoryId + "'><button class='term_button' id='" + categoryId + "'>Add</button></form></a></div>";
+
+'<form class="term_add_form" method="POST"><br><label class="category_name">' + categoryName + '</label><br><input type="text" class="new_term_box" name="new_term_box"><input type="hidden" class="user_id_term" name="user_id" value=' + userId + '><input type="hidden" class="parent_id" name="parent_id" value=' + categoryId + '><button class="term_button" id="' + categoryId + '">Add</button></form><div id="cat_term' + categoryId + '"></div>'; -->
