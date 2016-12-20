@@ -468,7 +468,7 @@ if __name__ == "__main__":
     DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
 
-    app.run(host="127.0.0.1", port=PORT, debug=DEBUG)
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
     
 
     # for vagrant: (host="0.0.0.0", port=5003)
