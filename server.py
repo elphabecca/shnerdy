@@ -9,7 +9,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
 
-app.secret_key = "talknerdytome"
+# app.secret_key = "talknerdytome"
+app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "talknerdytome")
 SHARED_SECRET = os.environ["SHARED_SECRET"]
 KEYSTRING = os.environ["KEYSTRING"]
 # KEYSTRING = os.environ.get("KEYSTRING", "whatever")
@@ -462,14 +463,14 @@ def logout_user():
 if __name__ == "__main__":
 
     connect_to_db(app, os.environ.get("DATABASE_URL"))
-    app.debug = True
     # DebugToolbarExtension(app)
+    # db.create_all(app=app)
     DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
 
-    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
+    app.run(host="127.0.0.1", port=PORT, debug=DEBUG)
     
-    
+
     # for vagrant: (host="0.0.0.0", port=5003)
 
 

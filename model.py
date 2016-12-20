@@ -152,7 +152,8 @@ def connect_to_db(app, uri=None):
 
 if __name__ == "__main__":
     from server import app
-    connect_to_db(app)
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
+    # db.create_all(app=app)
     print "This is in the model file -- you're in the DB"
 
 
