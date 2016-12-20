@@ -467,8 +467,9 @@ if __name__ == "__main__":
     # db.create_all(app=app)
     DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
+    HOST = os.environ.get("HOST")
 
-    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
+    app.run(host=HOST, port=PORT, debug=DEBUG)
     
 
     # for vagrant: (host="0.0.0.0", port=5003)
