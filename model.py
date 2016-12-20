@@ -141,10 +141,10 @@ def example_data():
     db.session.commit()
 
 
-def connect_to_db(app, uri='postgresql:///shnerdy'):
+def connect_to_db(app, uri=None):
     """Connect to db"""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = uri
+    app.config['SQLALCHEMY_DATABASE_URI'] = uri or 'postgresql:///shnerdy'
     # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
