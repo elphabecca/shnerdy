@@ -13,9 +13,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "talknerdytome")
 SHARED_SECRET = os.environ["SHARED_SECRET"]
 KEYSTRING = os.environ["KEYSTRING"]
-# KEYSTRING = os.environ.get("KEYSTRING", "whatever")
-# if not KEYSTRING:
-#     raise ValueError("Hey, you didn't source...")
+
 REDIRECT_URI = "/oauth2callback"
 oauth = OAuth()
 
